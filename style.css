@@ -1,3 +1,9 @@
+:root {
+    --hero-total-width: 200px;
+    --hero-view-width: 50px;
+    --hero-view-height: 78px;
+}
+
 body {
     width: 100%;
     height: 100%;
@@ -5,7 +11,49 @@ body {
 }
 
 .bg {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
     width: 100vw;
     height: 100vh;
     background: url('images/bg.png') center/cover;
+}
+
+.hero__field {
+    display: flex;
+    justify-content: center;
+    height: 300px;
+    background-color: cornflowerblue;
+}
+
+.hero__container {
+    width: var(--hero-view-width);
+    height: var(--hero-view-height);
+    overflow: hidden;
+}
+
+
+.hero--front {
+    left: 0px;
+}
+
+.hero--back {
+    right: var(--hero-view-width);
+}
+
+.hero--left {
+    right: calc(var(--hero-view-width) * 2);
+}
+
+.hero--right {
+    right: calc(var(--hero-view-width) * 3);
+}
+
+
+
+
+
+.hero__img {
+    position: relative;
+    width: var(--hero-total-width);
 }
