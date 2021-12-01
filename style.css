@@ -23,7 +23,7 @@ body {
     display: flex;
     justify-content: center;
     height: 300px;
-    background-color: cornflowerblue;
+    /* background-color: cornflowerblue; */
 }
 
 .hero__container {
