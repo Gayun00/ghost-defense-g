@@ -17,11 +17,15 @@ body {
 .bg {
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
+    justify-content: space-between;
     width: 100vw;
     height: 100vh;
+    margin-top: 0;
+    padding: 0;
     background: url('images/bg.png') center/cover;
 }
+
+
 
 .hero__field {
     display: flex;
@@ -57,6 +61,11 @@ body {
     width: var(--hero-total-width);
 }
 
+.ghost__field {
+    display: flex;
+    justify-self: flex-start;
+}
+
 .ghost__container {
     width: var(--ghost-view-width);
     height: var(--ghost-view-height);
@@ -64,7 +73,6 @@ body {
 }
 
 .ghost__img {
-    position: relative;
     width: var(--ghost-total-width);
 }
 
