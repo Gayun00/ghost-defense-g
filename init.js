@@ -16,7 +16,6 @@ let SPEED = 10;
 
 function handleHero(e) {
     const key = e.key;
-    console.log(key)
 
     if (key === 'ArrowLeft') {
         handleHeroAngle('left');
@@ -63,13 +62,13 @@ function moveHero(direction) {
 // bullet
 
 let BULLET_MOVED_COUNT = 0;
-const BULLET_SPEED = 5;
+const BULLET_SPEED = 10;
 
 const $bullet = document.querySelector('.bullet');
+$bullet.addEventListener('transitionend', handleShotGhost);
 
 function handleBullet(e) {
     if(e.keyCode === 32) {
-        console.log(e.keyCode)
         const moveBullet = setInterval(() => {
             BULLET_MOVED_COUNT--;
             $bullet.style.transform = `translateY(${BULLET_MOVED_COUNT*10}px)`
@@ -78,7 +77,6 @@ function handleBullet(e) {
                 BULLET_MOVED_COUNT = 0;
                 $bullet.style.transform = `translateY(0px)`
             }
-            console.log('bang!')
         }, BULLET_SPEED);
     }
 
@@ -93,23 +91,64 @@ let GHOST_DOWN_COUNT = 0;
 let GHOST_LEFT_COUNT = 0;
 
 let MOVED_COUNT = 0;
-let WILL_MOVE_COUNT = 20;
+let WILL_MOVE_COUNT = 1;
 let GHOST_MOVE_WIDTH = 1;
 
-let GHOST_SPEED =  10;
+let GHOST_SPEED =  1000;
 
-const GHOST_COUNT = 8;
+const GHOST_COUNT = 3;
 
 const $ghostField = document.querySelector('.ghost__field');
 const $ghostFieldWidth = $ghostField.getBoundingClientRect().width;
 const $ghostFieldHeight = $ghostField.getBoundingClientRect().height;
+// $ghostField.addEventListener('transitionend', handleShotGhost)
 
 async function startGame() {
     await createRandomGhost(GHOST_COUNT)
-    await moveGhost();
+    // await moveGhost();
+    await getElementSize();
+}
+
+let GHOST_WIDTH;
+let GHOST_HEIGHT;
+
+let BULLET_WIDTH;
+let BULLET_HEIGHT;
+
+function getElementSize() {
+    const $ghost = document.querySelector('.ghost__container');
+    GHOST_WIDTH = $ghost.getBoundingClientRect().width;
+    GHOST_HEIGHT = $ghost.getBoundingClientRect().height;
+
+    BULLET_WIDTH = $bullet.getBoundingClientRect().width;
+    BULLET_HEIGHT = $bullet.getBoundingClientRect().height;
+    console.log(GHOST_WIDTH, GHOST_HEIGHT)
 }
 
 startGame();
+
+function handleShotGhost(e) {
+    const bulletX = $bullet.getBoundingClientRect().left;
+    const bulletY = $bullet.getBoundingClientRect().top;
+
+    const $ghosts = document.querySelectorAll('.ghost__container');
+    $ghosts.forEach((ghost) => {
+        const ghostImg = ghost.querySelector('.ghost__img')
+        const ghostX = ghost.getBoundingClientRect().left;
+        const ghostY = ghost.getBoundingClientRect().top;
+
+        console.log('ghost' +': '+  ghostY)
+        console.log('bullet' + ': '+  bulletY)
+
+        if(ghostX - 20 < bulletX && bulletX<  ghostX + 20
+            &&ghostY - 10 <bulletY && bulletY < ghostY + 10){
+                console.log('shot ghost')
+            ghostImg.classList.add('ghost__img--dead');
+        }
+    })
+
+}
+
 
 function moveGhost() {
     handleMoveToDownLeft()
@@ -135,7 +174,7 @@ function handleMoveToDownRight() {
     const moveDownRight = setInterval(() => {
         moveGhostTo('right')
         MOVED_COUNT++;
-        handlePassedGhost();
+        // handlePassedGhost();
 
         if(MOVED_COUNT === WILL_MOVE_COUNT) {
             clearInterval(moveDownRight)
@@ -146,9 +185,9 @@ function handleMoveToDownRight() {
 }
 
 function handlePassedGhost() {
-    const $ghostFieldLocation = $ghostField.getBoundingClientRect().top
-    console.log($ghostFieldLocation)
-    if($ghostFieldLocation === 700) {
+    const $ghostFieldLocation = $ghostField.getBoundingClientRect().top;
+
+    if($ghostFieldLocation === 800) {
         started = false;
     }
 }
@@ -159,7 +198,7 @@ function moveGhostTo(direction) {
         GHOST_DOWN_COUNT++;
     } else  {
         GHOST_LEFT_COUNT++;
-        GHOST_DOWN_COUNT++; 
+        GHOST_DOWN_COUNT++;
     }
     $ghostField.style.transform =`translate(${GHOST_LEFT_COUNT *GHOST_MOVE_WIDTH}px, ${GHOST_DOWN_COUNT *GHOST_MOVE_WIDTH}px)`;
 }
@@ -172,6 +211,7 @@ function createRandomGhost(count) {
         $ghostEl.innerHTML = `
             <img class="ghost__img" src="images/enemy.png" data-direction=${isStartedFromLeft()}>`
         $ghostField.appendChild($ghostEl);
+        const $ghostImgEl = document.querySelector('.ghost__img');
 
         const $ghostElWidth = $ghostEl.getBoundingClientRect().width;
 
@@ -179,7 +219,6 @@ function createRandomGhost(count) {
             (WILL_MOVE_COUNT * GHOST_MOVE_WIDTH) + $ghostElWidth / 2,
             $ghostFieldWidth - (WILL_MOVE_COUNT * GHOST_MOVE_WIDTH + $ghostElWidth / 2));
         const y = createRandomNumber(0, $ghostFieldHeight);
-        console.log($ghostFieldWidth, x)
         $ghostEl.style.left = `${x}px`;
         $ghostEl.style.top = `${y}px`;
     }
