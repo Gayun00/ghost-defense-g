@@ -63,16 +63,18 @@ function moveHero(direction) {
 
 let BULLET_MOVED_COUNT = 0;
 const BULLET_SPEED = 10;
+let moveBullet;
 
 const $bullet = document.querySelector('.bullet');
-$bullet.addEventListener('transitionend', handleShotGhost);
+$bullet.addEventListener('transitionend', handleShooting);
 
 function handleBullet(e) {
     if(e.keyCode === 32) {
-        const moveBullet = setInterval(() => {
+        moveBullet = setInterval(() => {
             BULLET_MOVED_COUNT--;
             $bullet.style.transform = `translateY(${BULLET_MOVED_COUNT*10}px)`
             if(BULLET_MOVED_COUNT === -50) {
+                // reloadBullet('moveBullet');
                 clearInterval(moveBullet)
                 BULLET_MOVED_COUNT = 0;
                 $bullet.style.transform = `translateY(0px)`
@@ -80,6 +82,12 @@ function handleBullet(e) {
         }, BULLET_SPEED);
     }
 
+}
+
+function reloadBullet(setIntervalName) {
+    clearInterval(setIntervalName)
+    BULLET_MOVED_COUNT = 0;
+    $bullet.style.transform = `translateY(0px)`
 }
 
 
@@ -101,11 +109,10 @@ const GHOST_COUNT = 3;
 const $ghostField = document.querySelector('.ghost__field');
 const $ghostFieldWidth = $ghostField.getBoundingClientRect().width;
 const $ghostFieldHeight = $ghostField.getBoundingClientRect().height;
-// $ghostField.addEventListener('transitionend', handleShotGhost)
 
 async function startGame() {
     await createRandomGhost(GHOST_COUNT)
-    // await moveGhost();
+    await moveGhost();
     await getElementSize();
 }
 
@@ -127,7 +134,7 @@ function getElementSize() {
 
 startGame();
 
-function handleShotGhost(e) {
+function handleShooting(e) {
     const bulletX = $bullet.getBoundingClientRect().left;
     const bulletY = $bullet.getBoundingClientRect().top;
 
@@ -142,8 +149,11 @@ function handleShotGhost(e) {
 
         if(ghostX - 20 < bulletX && bulletX<  ghostX + 20
             &&ghostY - 10 <bulletY && bulletY < ghostY + 10){
-                console.log('shot ghost')
-            ghostImg.classList.add('ghost__img--dead');
+                // BULLET_MOVED_COUNT = 0;
+                clearInterval(moveBullet) 
+                BULLET_MOVED_COUNT = 0;
+                $bullet.style.transform = `translateY(0px)`
+                ghostImg.classList.add('ghost__img--dead');
         }
     })
 
