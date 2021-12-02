@@ -62,7 +62,7 @@ function moveHero(direction) {
 // bullet
 
 let BULLET_MOVED_COUNT = 0;
-const BULLET_SPEED = 10;
+const BULLET_SPEED = 8;
 let moveBullet;
 
 const $bullet = document.querySelector('.bullet');
@@ -70,11 +70,11 @@ $bullet.addEventListener('transitionend', handleShooting);
 
 function handleBullet(e) {
     if(e.keyCode === 32) {
+        clearInterval(moveBullet);
         moveBullet = setInterval(() => {
             BULLET_MOVED_COUNT--;
             $bullet.style.transform = `translateY(${BULLET_MOVED_COUNT*10}px)`
             if(BULLET_MOVED_COUNT === -50) {
-                // reloadBullet('moveBullet');
                 clearInterval(moveBullet)
                 BULLET_MOVED_COUNT = 0;
                 $bullet.style.transform = `translateY(0px)`
@@ -99,10 +99,10 @@ let GHOST_DOWN_COUNT = 0;
 let GHOST_LEFT_COUNT = 0;
 
 let MOVED_COUNT = 0;
-let WILL_MOVE_COUNT = 1;
+let WILL_MOVE_COUNT = 7;
 let GHOST_MOVE_WIDTH = 1;
 
-let GHOST_SPEED =  1000;
+let GHOST_SPEED =  20;
 
 const GHOST_COUNT = 10;
 
@@ -145,8 +145,6 @@ function handleShooting(e) {
         const ghostX = ghost.getBoundingClientRect().left;
         const ghostY = ghost.getBoundingClientRect().top;
 
-        // console.log('ghost' +': '+  ghostY)
-        // console.log('bullet' + ': '+  bulletY)
         if(ghostImg.classList.contains('ghost__img--dead')) {
             setTimeout(() => {
                 ghostImg.classList.add('ghost__img--hide');
@@ -189,7 +187,6 @@ function handleMoveToDownRight() {
     const moveDownRight = setInterval(() => {
         moveGhostTo('right')
         MOVED_COUNT++;
-        // handlePassedGhost();
 
         if(MOVED_COUNT === WILL_MOVE_COUNT) {
             clearInterval(moveDownRight)
