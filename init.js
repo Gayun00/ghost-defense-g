@@ -1,9 +1,14 @@
 'use strict';
-
+const $heroWithBullet = document.querySelector('.hero__wrap');
 const $heroContainer = document.querySelector('.hero__container');
 const $heroImg = document.querySelector('.hero__img');
 
-window.addEventListener('keydown', handleHero);
+window.addEventListener('keydown', handleHeroAndBullet);
+
+function handleHeroAndBullet(e) {
+    handleHero(e)
+    handleBullet(e)
+}
 
 let LEFT_COUNT = 0;
 let UP_COUNT = 0;
@@ -11,6 +16,7 @@ let SPEED = 10;
 
 function handleHero(e) {
     const key = e.key;
+    console.log(key)
 
     if (key === 'ArrowLeft') {
         handleHeroAngle('left');
@@ -21,7 +27,7 @@ function handleHero(e) {
     } else if (key === 'ArrowUp') {
         handleHeroAngle('back');
         moveHero('up');
-    } else {
+    } else if (key === 'ArrowDown') {
         handleHeroAngle ('front');
         moveHero('down');
     }
@@ -50,8 +56,34 @@ function moveHero(direction) {
     } else {
         UP_COUNT++;
     }
-    $heroContainer.style.transform =` translate(${LEFT_COUNT * SPEED}px, ${UP_COUNT * SPEED}px)`;
+    $heroWithBullet.style.transform =` translate(${LEFT_COUNT * SPEED}px, ${UP_COUNT * SPEED}px)`;
+
 }
+
+// bullet
+
+let BULLET_MOVED_COUNT = 0;
+const BULLET_SPEED = 5;
+
+const $bullet = document.querySelector('.bullet');
+
+function handleBullet(e) {
+    if(e.keyCode === 32) {
+        console.log(e.keyCode)
+        const moveBullet = setInterval(() => {
+            BULLET_MOVED_COUNT--;
+            $bullet.style.transform = `translateY(${BULLET_MOVED_COUNT*10}px)`
+            if(BULLET_MOVED_COUNT === -50) {
+                clearInterval(moveBullet)
+                BULLET_MOVED_COUNT = 0;
+                $bullet.style.transform = `translateY(0px)`
+            }
+            console.log('bang!')
+        }, BULLET_SPEED);
+    }
+
+}
+
 
 // ghost
 
@@ -127,7 +159,7 @@ function moveGhostTo(direction) {
         GHOST_DOWN_COUNT++;
     } else  {
         GHOST_LEFT_COUNT++;
-        GHOST_DOWN_COUNT++;
+        GHOST_DOWN_COUNT++; 
     }
     $ghostField.style.transform =`translate(${GHOST_LEFT_COUNT *GHOST_MOVE_WIDTH}px, ${GHOST_DOWN_COUNT *GHOST_MOVE_WIDTH}px)`;
 }
