@@ -55,15 +55,12 @@ function moveHero(direction) {
 
 // ghost
 
-const $ghostContainers = document.querySelectorAll('.ghost__container');
 
 const $ghostField = document.querySelector('.ghost__field');
 const $ghostFieldWidth = $ghostField.getBoundingClientRect().width;
 const $ghostFieldHeight = $ghostField.getBoundingClientRect().height;
 
-$ghostContainers.forEach(($ghostContainer) => {
-    $ghostContainer.addEventListener('transitionend', stopGhostMove)
-})
+
 
 function stopGhostMove(e) {
     const ghostTop = e.target.getBoundingClientRect().top;
@@ -87,8 +84,33 @@ let GHOST_SPEED =  GHOST_SPEED_ONCE * 2;
 const GHOST_COUNT = 30;
 
 
-function moveGhost() {
+async function startGame() {
+    await createRandomGhost(GHOST_COUNT)
+    const $ghostContainers = await document.querySelectorAll('.ghost__container');
+    // await console.log($ghostContainers)
+    await $ghostContainers.forEach(($ghostContainer) => {
+        $ghostContainer.addEventListener('transitionend', stopGhostMove)
+    })
+    await moveGhost($ghostContainers);
 
+}
+
+startGame();
+
+async function moveGhost($ghostContainers) {
+    $ghostContainers.forEach((container) => {
+        console.log(container)
+
+    })
+    // await $ghostContainers.forEach(($ghostContainer) => {
+    //     console.log('d')
+    //     console.log($ghostContainer)
+    //     if($ghostContainer.dataset.direction === 'left') {
+    //         handleMoveToDownLeft();
+    //     } else {
+    //         handleMoveToDownRight();
+    //     }
+    // })
 }
 
 function handleMoveToDownLeft() {
@@ -152,20 +174,29 @@ function createRandomGhost(count) {
         const $ghostEl = document.createElement('div');
         $ghostEl.classList.add('ghost__container')
         $ghostEl.innerHTML = `
-            <img class="ghost__img" src="images/enemy.png" alt="">`
+            <img class="ghost__img" src="images/enemy.png" data-direction=${isStartedFromLeft()}>`
         $ghostField.appendChild($ghostEl);
 
         const x = createRandomNumber(0, $ghostFieldWidth);
         const y = createRandomNumber(0, $ghostFieldHeight);
         $ghostEl.style.left = `${x}px`;
         $ghostEl.style.top = `${y}px`;
+
+
     }
 
 }
 
-createRandomGhost(GHOST_COUNT)
+function isStartedFromLeft() {
+    if (Math.round(createRandomNumber(1,2)) === 1) {
+        return 'left';
+    } else {
+        return 'right';
+    }
+}
+
+
 function createRandomNumber(min, max) {
     return Math.random() * (max - min) + min;
 }
 
-console.log($ghostFieldHeight)
