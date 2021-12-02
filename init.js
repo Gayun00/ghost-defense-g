@@ -55,117 +55,81 @@ function moveHero(direction) {
 
 // ghost
 
-
-const $ghostField = document.querySelector('.ghost__field');
-const $ghostFieldWidth = $ghostField.getBoundingClientRect().width;
-const $ghostFieldHeight = $ghostField.getBoundingClientRect().height;
-
-
-
-function stopGhostMove(e) {
-    const ghostTop = e.target.getBoundingClientRect().top;
-    if (ghostTop === 700) {
-        console.log('here stop it there');
-    }
-}
-
-
+let started = true;
 
 let GHOST_DOWN_COUNT = 0;
 let GHOST_LEFT_COUNT = 0;
 
 let MOVED_COUNT = 0;
-let WILL_MOVE_COUNT = 2;
-let GHOST_MOVE_WIDTH = 2
+let WILL_MOVE_COUNT = 20;
+let GHOST_MOVE_WIDTH = 1;
 
-let GHOST_SPEED_ONCE = 1000;
-let GHOST_SPEED =  GHOST_SPEED_ONCE * 2;
+let GHOST_SPEED =  10;
 
-const GHOST_COUNT = 2;
+const GHOST_COUNT = 8;
 
+const $ghostField = document.querySelector('.ghost__field');
+const $ghostFieldWidth = $ghostField.getBoundingClientRect().width;
+const $ghostFieldHeight = $ghostField.getBoundingClientRect().height;
 
 async function startGame() {
     await createRandomGhost(GHOST_COUNT)
-    const $ghostContainers = await document.querySelectorAll('.ghost__container');
-    // await console.log($ghostContainers)
-    await $ghostContainers.forEach(($ghostContainer) => {
-        $ghostContainer.addEventListener('transitionend', stopGhostMove)
-    })
-    // await moveGhost($ghostContainers);
-
+    await moveGhost();
 }
 
 startGame();
 
-function moveGhost($ghostContainers) {
-    $ghostContainers.forEach((ghost) => {
-        handleMoveToDownRight(ghost)
-
-    })
-    // await $ghostContainers.forEach(($ghostContainer) => {
-    //     console.log('d')
-    //     console.log($ghostContainer)
-    //     if($ghostContainer.dataset.direction === 'left') {
-    //         handleMoveToDownLeft();
-    //     } else {
-    //         handleMoveToDownRight();
-    //     }
-    // })
+function moveGhost() {
+    handleMoveToDownLeft()
 }
 
-function handleMoveToDownLeft(ghost) {
-    const moveToDownLeft = setInterval(() => {
-        moveGhostDownAndLeft(ghost);
+
+function handleMoveToDownLeft() {
+    if(started === false) return;
+    const moveDownLeft = setInterval(() => {
+        moveGhostTo('left')
         MOVED_COUNT++;
-        if (MOVED_COUNT === WILL_MOVE_COUNT) {
+        handlePassedGhost();
+        if(MOVED_COUNT === WILL_MOVE_COUNT) {
+            clearInterval(moveDownLeft)
             MOVED_COUNT = 0;
-            clearInterval(moveToDownLeft);
-            handleMoveToDownRight(ghost);
+            handleMoveToDownRight();
         }
     }, GHOST_SPEED)
 }
 
-// handleMoveToDownLeft();
-
-function handleMoveToDownRight(ghost) {
-    const moveToDownRight = setInterval(() => {
-        moveGhostDownAndRight(ghost);
+function handleMoveToDownRight() {
+    if(started === false) return;
+    const moveDownRight = setInterval(() => {
+        moveGhostTo('right')
         MOVED_COUNT++;
-        if (MOVED_COUNT === WILL_MOVE_COUNT) {
+        handlePassedGhost();
+
+        if(MOVED_COUNT === WILL_MOVE_COUNT) {
+            clearInterval(moveDownRight)
             MOVED_COUNT = 0;
-            clearInterval(moveToDownRight);
-            handleMoveToDownLeft(ghost);
+            handleMoveToDownLeft();
         }
     }, GHOST_SPEED)
 }
 
-
-
-function moveGhostDownAndLeft(ghost) {
-    moveGhostTo(ghost, 'down');
-    setTimeout(() => {
-        moveGhostTo(ghost, 'left')
-    }, GHOST_SPEED_ONCE)
+function handlePassedGhost() {
+    const $ghostFieldLocation = $ghostField.getBoundingClientRect().top
+    console.log($ghostFieldLocation)
+    if($ghostFieldLocation === 700) {
+        started = false;
+    }
 }
 
-function moveGhostDownAndRight(ghost) {
-    moveGhostTo(ghost, 'down');
-    setTimeout(() => {
-        moveGhostTo(ghost, 'right')
-    }, GHOST_SPEED_ONCE)
-}
-
-
-function moveGhostTo(ghost, direction) {
+function moveGhostTo(direction) {
     if (direction === 'left') {
         GHOST_LEFT_COUNT--;
-    } else if (direction === 'right') {
+        GHOST_DOWN_COUNT++;
+    } else  {
         GHOST_LEFT_COUNT++;
-    } else {
         GHOST_DOWN_COUNT++;
     }
-    ghost.style.transform =` translate(${GHOST_LEFT_COUNT *GHOST_MOVE_WIDTH}px, ${GHOST_DOWN_COUNT *GHOST_MOVE_WIDTH}px)`;
-
+    $ghostField.style.transform =`translate(${GHOST_LEFT_COUNT *GHOST_MOVE_WIDTH}px, ${GHOST_DOWN_COUNT *GHOST_MOVE_WIDTH}px)`;
 }
 
 // random ghost
@@ -177,14 +141,16 @@ function createRandomGhost(count) {
             <img class="ghost__img" src="images/enemy.png" data-direction=${isStartedFromLeft()}>`
         $ghostField.appendChild($ghostEl);
 
-        const x = createRandomNumber(0, $ghostFieldWidth);
+        const $ghostElWidth = $ghostEl.getBoundingClientRect().width;
+
+        const x = createRandomNumber(
+            (WILL_MOVE_COUNT * GHOST_MOVE_WIDTH) + $ghostElWidth / 2,
+            $ghostFieldWidth - (WILL_MOVE_COUNT * GHOST_MOVE_WIDTH + $ghostElWidth / 2));
         const y = createRandomNumber(0, $ghostFieldHeight);
+        console.log($ghostFieldWidth, x)
         $ghostEl.style.left = `${x}px`;
         $ghostEl.style.top = `${y}px`;
-
-
     }
-
 }
 
 function isStartedFromLeft() {
@@ -194,7 +160,6 @@ function isStartedFromLeft() {
         return 'right';
     }
 }
-
 
 function createRandomNumber(min, max) {
     return Math.random() * (max - min) + min;
