@@ -70,6 +70,7 @@ body {
     width: var(--ghost-view-width);
     height: var(--ghost-view-height);
     overflow: hidden;
+    transition: 0.5ms all linear;
 }
 
 .ghost__img {

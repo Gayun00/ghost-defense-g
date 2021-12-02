@@ -56,19 +56,26 @@ function moveHero(direction) {
 // ghost
 
 const $ghostContainer = document.querySelector('.ghost__container');
+$ghostContainer.addEventListener('transitionend',(e) => {
+    const ghostTop = e.target.getBoundingClientRect().top;
+    if (ghostTop === 700) {
+        console.log('here stop it there');
+    }
+})
 
 let GHOST_DOWN_COUNT = 0;
 let GHOST_LEFT_COUNT = 0;
+
 let MOVED_COUNT = 0;
 let WILL_MOVE_COUNT = 40;
 let GHOST_MOVE_WIDTH = 2
+
 let GHOST_SPEED_ONCE = 10;
 let GHOST_SPEED =  GHOST_SPEED_ONCE * 2;
 
+
 function moveGhost() {
-    if (GhostWillMove === true) {
-        handleMoveToDownLeft
-    }
+
 }
 
 function handleMoveToDownLeft() {
@@ -80,10 +87,10 @@ function handleMoveToDownLeft() {
             clearInterval(moveToDownLeft);
             handleMoveToDownRight();
         }
-        console.log(MOVED_COUNT, )
     }, GHOST_SPEED)
 }
 
+// handleMoveToDownLeft();
 
 function handleMoveToDownRight() {
     const moveToDownRight = setInterval(() => {
@@ -92,8 +99,8 @@ function handleMoveToDownRight() {
         if (MOVED_COUNT === WILL_MOVE_COUNT) {
             MOVED_COUNT = 0;
             clearInterval(moveToDownRight);
+            handleMoveToDownLeft();
         }
-        console.log(MOVED_COUNT, )
     }, GHOST_SPEED)
 }
 
@@ -126,5 +133,6 @@ function moveGhostTo(direction) {
         GHOST_DOWN_COUNT++;
     }
     $ghostContainer.style.transform =` translate(${GHOST_LEFT_COUNT *GHOST_MOVE_WIDTH}px, ${GHOST_DOWN_COUNT *GHOST_MOVE_WIDTH}px)`;
-    console.log(`${GHOST_LEFT_COUNT * SPEED}`)
+    // console.log(`${GHOST_LEFT_COUNT * SPEED}`)
+
 }
