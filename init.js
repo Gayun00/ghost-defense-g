@@ -75,13 +75,13 @@ let GHOST_DOWN_COUNT = 0;
 let GHOST_LEFT_COUNT = 0;
 
 let MOVED_COUNT = 0;
-let WILL_MOVE_COUNT = 40;
+let WILL_MOVE_COUNT = 2;
 let GHOST_MOVE_WIDTH = 2
 
-let GHOST_SPEED_ONCE = 10;
+let GHOST_SPEED_ONCE = 1000;
 let GHOST_SPEED =  GHOST_SPEED_ONCE * 2;
 
-const GHOST_COUNT = 30;
+const GHOST_COUNT = 2;
 
 
 async function startGame() {
@@ -91,15 +91,15 @@ async function startGame() {
     await $ghostContainers.forEach(($ghostContainer) => {
         $ghostContainer.addEventListener('transitionend', stopGhostMove)
     })
-    await moveGhost($ghostContainers);
+    // await moveGhost($ghostContainers);
 
 }
 
 startGame();
 
-async function moveGhost($ghostContainers) {
-    $ghostContainers.forEach((container) => {
-        console.log(container)
+function moveGhost($ghostContainers) {
+    $ghostContainers.forEach((ghost) => {
+        handleMoveToDownRight(ghost)
 
     })
     // await $ghostContainers.forEach(($ghostContainer) => {
@@ -113,50 +113,50 @@ async function moveGhost($ghostContainers) {
     // })
 }
 
-function handleMoveToDownLeft() {
+function handleMoveToDownLeft(ghost) {
     const moveToDownLeft = setInterval(() => {
-        moveGhostDownAndLeft();
+        moveGhostDownAndLeft(ghost);
         MOVED_COUNT++;
         if (MOVED_COUNT === WILL_MOVE_COUNT) {
             MOVED_COUNT = 0;
             clearInterval(moveToDownLeft);
-            handleMoveToDownRight();
+            handleMoveToDownRight(ghost);
         }
     }, GHOST_SPEED)
 }
 
 // handleMoveToDownLeft();
 
-function handleMoveToDownRight() {
+function handleMoveToDownRight(ghost) {
     const moveToDownRight = setInterval(() => {
-        moveGhostDownAndRight();
+        moveGhostDownAndRight(ghost);
         MOVED_COUNT++;
         if (MOVED_COUNT === WILL_MOVE_COUNT) {
             MOVED_COUNT = 0;
             clearInterval(moveToDownRight);
-            handleMoveToDownLeft();
+            handleMoveToDownLeft(ghost);
         }
     }, GHOST_SPEED)
 }
 
 
 
-function moveGhostDownAndLeft() {
-    moveGhostTo('down');
+function moveGhostDownAndLeft(ghost) {
+    moveGhostTo(ghost, 'down');
     setTimeout(() => {
-        moveGhostTo('left')
+        moveGhostTo(ghost, 'left')
     }, GHOST_SPEED_ONCE)
 }
 
-function moveGhostDownAndRight() {
-    moveGhostTo('down');
+function moveGhostDownAndRight(ghost) {
+    moveGhostTo(ghost, 'down');
     setTimeout(() => {
-        moveGhostTo('right')
+        moveGhostTo(ghost, 'right')
     }, GHOST_SPEED_ONCE)
 }
 
 
-function moveGhostTo(direction) {
+function moveGhostTo(ghost, direction) {
     if (direction === 'left') {
         GHOST_LEFT_COUNT--;
     } else if (direction === 'right') {
@@ -164,7 +164,7 @@ function moveGhostTo(direction) {
     } else {
         GHOST_DOWN_COUNT++;
     }
-    $ghostContainer.style.transform =` translate(${GHOST_LEFT_COUNT *GHOST_MOVE_WIDTH}px, ${GHOST_DOWN_COUNT *GHOST_MOVE_WIDTH}px)`;
+    ghost.style.transform =` translate(${GHOST_LEFT_COUNT *GHOST_MOVE_WIDTH}px, ${GHOST_DOWN_COUNT *GHOST_MOVE_WIDTH}px)`;
 
 }
 
