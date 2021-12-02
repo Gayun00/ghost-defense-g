@@ -63,7 +63,7 @@ body {
 
 .ghost__field {
     display: flex;
-    justify-self: flex-start;
+    justify-content: center;
 }
 
 .ghost__container {
