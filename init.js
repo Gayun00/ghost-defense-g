@@ -104,7 +104,7 @@ let GHOST_MOVE_WIDTH = 1;
 
 let GHOST_SPEED =  1000;
 
-const GHOST_COUNT = 3;
+const GHOST_COUNT = 10;
 
 const $ghostField = document.querySelector('.ghost__field');
 const $ghostFieldWidth = $ghostField.getBoundingClientRect().width;
@@ -140,21 +140,26 @@ function handleShooting(e) {
 
     const $ghosts = document.querySelectorAll('.ghost__container');
     $ghosts.forEach((ghost) => {
+
         const ghostImg = ghost.querySelector('.ghost__img')
         const ghostX = ghost.getBoundingClientRect().left;
         const ghostY = ghost.getBoundingClientRect().top;
 
-        console.log('ghost' +': '+  ghostY)
-        console.log('bullet' + ': '+  bulletY)
-
-        if(ghostX - 20 < bulletX && bulletX<  ghostX + 20
+        // console.log('ghost' +': '+  ghostY)
+        // console.log('bullet' + ': '+  bulletY)
+        if(ghostImg.classList.contains('ghost__img--dead')) {
+            setTimeout(() => {
+                ghostImg.classList.add('ghost__img--hide');
+            }, 400);
+        } else if(ghostX - 30 < bulletX && bulletX<  ghostX + 30
             &&ghostY - 10 <bulletY && bulletY < ghostY + 10){
-                // BULLET_MOVED_COUNT = 0;
-                clearInterval(moveBullet) 
+                clearInterval(moveBullet)
                 BULLET_MOVED_COUNT = 0;
                 $bullet.style.transform = `translateY(0px)`
                 ghostImg.classList.add('ghost__img--dead');
         }
+
+        console.log(ghost)
     })
 
 }

@@ -77,14 +77,14 @@ body {
 }
 
 .ghost__field {
-    /* position: relative; */
+    position: relative;
     /* top: -300px; */
     height: 200px;
     transition: 0.5ms all linear;
 }
 
 .ghost__container {
-    position: relative;
+    position: absolute;
     width: var(--ghost-view-width);
     height: var(--ghost-view-height);
     overflow: hidden;
@@ -103,4 +103,8 @@ body {
     right: 0px;
     /* right: calc(var(--ghost-view-width)); */
     /* background-color: darkcyan; */
+}
+
+.ghost__img--hide {
+    visibility: hidden;
 }
