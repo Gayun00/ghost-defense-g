@@ -55,13 +55,24 @@ function moveHero(direction) {
 
 // ghost
 
-const $ghostContainer = document.querySelector('.ghost__container');
-$ghostContainer.addEventListener('transitionend',(e) => {
+const $ghostContainers = document.querySelectorAll('.ghost__container');
+
+const $ghostField = document.querySelector('.ghost__field');
+const $ghostFieldWidth = $ghostField.getBoundingClientRect().width;
+const $ghostFieldHeight = $ghostField.getBoundingClientRect().height;
+
+$ghostContainers.forEach(($ghostContainer) => {
+    $ghostContainer.addEventListener('transitionend', stopGhostMove)
+})
+
+function stopGhostMove(e) {
     const ghostTop = e.target.getBoundingClientRect().top;
     if (ghostTop === 700) {
         console.log('here stop it there');
     }
-})
+}
+
+
 
 let GHOST_DOWN_COUNT = 0;
 let GHOST_LEFT_COUNT = 0;
@@ -72,6 +83,8 @@ let GHOST_MOVE_WIDTH = 2
 
 let GHOST_SPEED_ONCE = 10;
 let GHOST_SPEED =  GHOST_SPEED_ONCE * 2;
+
+const GHOST_COUNT = 30;
 
 
 function moveGhost() {
@@ -121,9 +134,6 @@ function moveGhostDownAndRight() {
 }
 
 
-
-
-
 function moveGhostTo(direction) {
     if (direction === 'left') {
         GHOST_LEFT_COUNT--;
@@ -133,6 +143,29 @@ function moveGhostTo(direction) {
         GHOST_DOWN_COUNT++;
     }
     $ghostContainer.style.transform =` translate(${GHOST_LEFT_COUNT *GHOST_MOVE_WIDTH}px, ${GHOST_DOWN_COUNT *GHOST_MOVE_WIDTH}px)`;
-    // console.log(`${GHOST_LEFT_COUNT * SPEED}`)
 
 }
+
+// random ghost
+function createRandomGhost(count) {
+    for(let i = 0; i < count; i++) {
+        const $ghostEl = document.createElement('div');
+        $ghostEl.classList.add('ghost__container')
+        $ghostEl.innerHTML = `
+            <img class="ghost__img" src="images/enemy.png" alt="">`
+        $ghostField.appendChild($ghostEl);
+
+        const x = createRandomNumber(0, $ghostFieldWidth);
+        const y = createRandomNumber(0, $ghostFieldHeight);
+        $ghostEl.style.left = `${x}px`;
+        $ghostEl.style.top = `${y}px`;
+    }
+
+}
+
+createRandomGhost(GHOST_COUNT)
+function createRandomNumber(min, max) {
+    return Math.random() * (max - min) + min;
+}
+
+console.log($ghostFieldHeight)

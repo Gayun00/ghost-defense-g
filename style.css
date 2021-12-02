@@ -62,11 +62,15 @@ body {
 }
 
 .ghost__field {
-    display: flex;
-    justify-content: center;
+    position: relative;
+    /* display: flex; */
+    /* justify-content: center; */
+    height: 200px;
 }
 
 .ghost__container {
+    position: absolute;
+    /* top: 30px; */
     width: var(--ghost-view-width);
     height: var(--ghost-view-height);
     overflow: hidden;
@@ -74,6 +78,7 @@ body {
 }
 
 .ghost__img {
+    /* position: relative; */
     width: var(--ghost-total-width);
 }
 
