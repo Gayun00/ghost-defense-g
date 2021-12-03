@@ -1,12 +1,13 @@
-// 'use strict';
+'use strict';
+
+// hero
 
 import {Ghost} from './ghost.js';
+import {Hero} from './hero.js';
 
-
-
-const $heroWithBullet = document.querySelector('.hero__wrap');
-const $heroContainer = document.querySelector('.hero__container');
-const $heroImg = document.querySelector('.hero__img');
+let LEFT_COUNT = 0;
+let UP_COUNT = 0;
+let SPEED = 10;
 
 window.addEventListener('keydown', handleHeroAndBullet);
 
@@ -15,54 +16,24 @@ function handleHeroAndBullet(e) {
     handleBullet(e)
 }
 
-let LEFT_COUNT = 0;
-let UP_COUNT = 0;
-let SPEED = 10;
-
 function handleHero(e) {
     const key = e.key;
 
     if (key === 'ArrowLeft') {
-        handleHeroAngle('left');
-        moveHero('left');
+        hero.handleHeroAngle('left');
+        hero.moveHero('left');
     } else if (key === 'ArrowRight') {
-        handleHeroAngle('right');
-        moveHero('right');
+        hero.handleHeroAngle('right');
+        hero.moveHero('right');
     } else if (key === 'ArrowUp') {
-        handleHeroAngle('back');
-        moveHero('up');
+        hero.handleHeroAngle('back');
+        hero.moveHero('up');
     } else if (key === 'ArrowDown') {
-        handleHeroAngle ('front');
-        moveHero('down');
+        hero.handleHeroAngle ('front');
+        hero.moveHero('down');
     }
 }
 
-function handleHeroAngle(direction) {
-    if($heroImg.classList.contains('hero--front')) {
-        $heroImg.classList.remove('hero--front');
-    } else if ($heroImg.classList.contains('hero--back')) {
-        $heroImg.classList.remove('hero--back');
-    } else if ($heroImg.classList.contains('hero--left')) {
-        $heroImg.classList.remove('hero--left');
-    } else if ($heroImg.classList.contains('hero--right')) {
-        $heroImg.classList.remove('hero--right');
-    }
-        $heroImg.classList.add(`hero--${direction}`);
-}
-
-function moveHero(direction) {
-    if (direction === 'left') {
-        LEFT_COUNT--;
-    } else if (direction === 'right') {
-        LEFT_COUNT++;
-    } else if (direction === 'up') {
-        UP_COUNT--;
-    } else {
-        UP_COUNT++;
-    }
-    $heroWithBullet.style.transform =` translate(${LEFT_COUNT * SPEED}px, ${UP_COUNT * SPEED}px)`;
-
-}
 
 // bullet
 
@@ -89,11 +60,7 @@ function handleBullet(e) {
 
 }
 
-function reloadBullet(setIntervalName) {
-    clearInterval(setIntervalName)
-    BULLET_MOVED_COUNT = 0;
-    $bullet.style.transform = `translateY(0px)`
-}
+const hero = new Hero(LEFT_COUNT, UP_COUNT, SPEED, $bullet, BULLET_MOVED_COUNT, BULLET_SPEED)
 
 
 // ghost
@@ -116,8 +83,6 @@ const ghost = new Ghost(
     GHOST_COUNT, GHOST_MOVE_WIDTH, WILL_MOVE_COUNT,
         GHOST_LEFT_COUNT, GHOST_DOWN_COUNT);
     ghost.createRandomGhost();
-
-handleMoveToDownLeft();
 
 async function startGame() {
     await createRandomGhost(GHOST_COUNT)
@@ -159,7 +124,6 @@ function handleMoveToDownRight() {
     }, GHOST_SPEED)
 }
 
-
 function handlePassedGhost() {
     const $ghostFieldLocation = $ghostField.getBoundingClientRect().top;
     if($ghostFieldLocation > 800) {
@@ -167,17 +131,7 @@ function handlePassedGhost() {
     }
 }
 
-
-
-
-
 // shooting
-
-let GHOST_WIDTH;
-let GHOST_HEIGHT;
-
-let BULLET_WIDTH;
-let BULLET_HEIGHT;
 
 function getElementSize() {
     const $ghost = document.querySelector('.ghost__container');
@@ -187,7 +141,6 @@ function getElementSize() {
     BULLET_WIDTH = $bullet.getBoundingClientRect().width;
     BULLET_HEIGHT = $bullet.getBoundingClientRect().height;
 }
-
 
 function handleShooting(e) {
     const bulletX = $bullet.getBoundingClientRect().left;
@@ -211,10 +164,9 @@ function handleShooting(e) {
                 $bullet.style.transform = `translateY(0px)`
                 ghostImg.classList.add('ghost__img--dead');
         }
-
     })
-
 }
 
+handleMoveToDownLeft();
 
 
