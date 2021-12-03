@@ -104,23 +104,74 @@ let GHOST_DOWN_COUNT = 0;
 let GHOST_LEFT_COUNT = 0;
 
 let MOVED_COUNT = 0;
-let WILL_MOVE_COUNT = 7;
+let WILL_MOVE_COUNT = 15;
 let GHOST_MOVE_WIDTH = 1;
 
 let GHOST_SPEED =  20;
-
 const GHOST_COUNT = 10;
 
-const ghost = new Ghost(GHOST_COUNT, WILL_MOVE_COUNT, GHOST_MOVE_WIDTH);
-ghost.printCount();
-ghost.createRandomGhost();
+const $ghostField = document.querySelector('.ghost__field');
 
+const ghost = new Ghost(
+    GHOST_COUNT, GHOST_MOVE_WIDTH, WILL_MOVE_COUNT,
+        GHOST_LEFT_COUNT, GHOST_DOWN_COUNT);
+    ghost.createRandomGhost();
+
+handleMoveToDownLeft();
 
 async function startGame() {
     await createRandomGhost(GHOST_COUNT)
     await moveGhost();
     await getElementSize();
 }
+
+function stopGame() {
+    started = false;
+}
+
+function handleMoveToDownLeft() {
+    if(started === false) return;
+    const moveDownLeft = setInterval(() => {
+        MOVED_COUNT++;
+        ghost.moveGhostTo('left');
+        handlePassedGhost();
+
+        if(MOVED_COUNT === WILL_MOVE_COUNT) {
+            clearInterval(moveDownLeft)
+            MOVED_COUNT = 0;
+            handleMoveToDownRight()
+        }
+    }, GHOST_SPEED)
+}
+
+function handleMoveToDownRight() {
+    if(started === false) return;
+    const moveDownRight = setInterval(() => {
+        MOVED_COUNT++;
+        ghost.moveGhostTo('right')
+        handlePassedGhost();
+
+        if(MOVED_COUNT === WILL_MOVE_COUNT) {
+            clearInterval(moveDownRight)
+            MOVED_COUNT = 0;
+            handleMoveToDownLeft();
+        }
+    }, GHOST_SPEED)
+}
+
+
+function handlePassedGhost() {
+    const $ghostFieldLocation = $ghostField.getBoundingClientRect().top;
+    if($ghostFieldLocation > 800) {
+        stopGame()
+    }
+}
+
+
+
+
+
+// shooting
 
 let GHOST_WIDTH;
 let GHOST_HEIGHT;
@@ -135,10 +186,8 @@ function getElementSize() {
 
     BULLET_WIDTH = $bullet.getBoundingClientRect().width;
     BULLET_HEIGHT = $bullet.getBoundingClientRect().height;
-    console.log(GHOST_WIDTH, GHOST_HEIGHT)
 }
 
-// startGame();
 
 function handleShooting(e) {
     const bulletX = $bullet.getBoundingClientRect().left;
@@ -163,73 +212,9 @@ function handleShooting(e) {
                 ghostImg.classList.add('ghost__img--dead');
         }
 
-        console.log(ghost)
     })
 
 }
 
 
-function moveGhost() {
-    handleMoveToDownLeft()
-}
-
-
-function handleMoveToDownLeft() {
-    if(started === false) return;
-    const moveDownLeft = setInterval(() => {
-        moveGhostTo('left')
-        MOVED_COUNT++;
-        handlePassedGhost();
-        if(MOVED_COUNT === WILL_MOVE_COUNT) {
-            clearInterval(moveDownLeft)
-            MOVED_COUNT = 0;
-            handleMoveToDownRight();
-        }
-    }, GHOST_SPEED)
-}
-
-function handleMoveToDownRight() {
-    if(started === false) return;
-    const moveDownRight = setInterval(() => {
-        moveGhostTo('right')
-        MOVED_COUNT++;
-
-        if(MOVED_COUNT === WILL_MOVE_COUNT) {
-            clearInterval(moveDownRight)
-            MOVED_COUNT = 0;
-            handleMoveToDownLeft();
-        }
-    }, GHOST_SPEED)
-}
-
-function handlePassedGhost() {
-    const $ghostFieldLocation = $ghostField.getBoundingClientRect().top;
-
-    if($ghostFieldLocation === 800) {
-        started = false;
-    }
-}
-
-function moveGhostTo(direction) {
-    if (direction === 'left') {
-        GHOST_LEFT_COUNT--;
-        GHOST_DOWN_COUNT++;
-    } else  {
-        GHOST_LEFT_COUNT++;
-        GHOST_DOWN_COUNT++;
-    }
-    $ghostField.style.transform =`translate(${GHOST_LEFT_COUNT *GHOST_MOVE_WIDTH}px, ${GHOST_DOWN_COUNT *GHOST_MOVE_WIDTH}px)`;
-}
-
-function isStartedFromLeft() {
-    if (Math.round(createRandomNumber(1,2)) === 1) {
-        return 'left';
-    } else {
-        return 'right';
-    }
-}
-
-function createRandomNumber(min, max) {
-    return Math.random() * (max - min) + min;
-}
 

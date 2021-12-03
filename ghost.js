@@ -1,15 +1,16 @@
 export class Ghost {
-    constructor(ghostCount, willMoveCount, moveWidth) {
+    constructor(ghostCount, moveWidth, willMoveCount, leftCount, downCount) {
         this.ghostCount = ghostCount;
-        this.willMoveCount = willMoveCount;
+
         this.moveWidth = moveWidth;
+        this.willMoveCount = willMoveCount;
+
+        this.leftCount = leftCount;
+        this.downCount = downCount;
+
         this.$ghostField = document.querySelector('.ghost__field');
         this.$ghostFieldWidth = this.$ghostField.getBoundingClientRect().width;
         this.$ghostFieldHeight = this.$ghostField.getBoundingClientRect().height;
-    }
-
-    printCount() {
-        console.log(this.ghostCount);
     }
 
     createRandomGhost() {
@@ -19,7 +20,6 @@ export class Ghost {
             $ghostEl.innerHTML = `
                 <img class="ghost__img" src="images/enemy.png">`
             this.$ghostField.appendChild($ghostEl);
-            const $ghostImgEl = document.querySelector('.ghost__img');
             const $ghostElWidth = $ghostEl.getBoundingClientRect().width;
 
             const x = this.createRandomNumber(
@@ -28,11 +28,23 @@ export class Ghost {
             const y = this.createRandomNumber(0, this.$ghostFieldHeight);
             $ghostEl.style.left = `${x}px`;
             $ghostEl.style.top = `${y}px`;
-            console.log(x,y)
+            console.log
         }
     }
 
     createRandomNumber(min, max) {
         return Math.random() * (max - min) + min;
+    }
+
+    moveGhostTo(direction) {
+        if (direction === 'left') {
+            this.leftCount--;
+            this.downCount++;
+        } else  {
+            this.leftCount++;
+            this.downCount++;
+        }
+        this.$ghostField.style.transform =`
+            translate(${this.leftCount * this.moveWidth}px, ${this.downCount * this.moveWidth}px)`;
     }
 }
