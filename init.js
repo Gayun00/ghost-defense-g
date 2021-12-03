@@ -1,4 +1,9 @@
-'use strict';
+// 'use strict';
+
+import {Ghost} from './ghost.js';
+
+
+
 const $heroWithBullet = document.querySelector('.hero__wrap');
 const $heroContainer = document.querySelector('.hero__container');
 const $heroImg = document.querySelector('.hero__img');
@@ -106,9 +111,10 @@ let GHOST_SPEED =  20;
 
 const GHOST_COUNT = 10;
 
-const $ghostField = document.querySelector('.ghost__field');
-const $ghostFieldWidth = $ghostField.getBoundingClientRect().width;
-const $ghostFieldHeight = $ghostField.getBoundingClientRect().height;
+const ghost = new Ghost(GHOST_COUNT, WILL_MOVE_COUNT, GHOST_MOVE_WIDTH);
+ghost.printCount();
+ghost.createRandomGhost();
+
 
 async function startGame() {
     await createRandomGhost(GHOST_COUNT)
@@ -132,7 +138,7 @@ function getElementSize() {
     console.log(GHOST_WIDTH, GHOST_HEIGHT)
 }
 
-startGame();
+// startGame();
 
 function handleShooting(e) {
     const bulletX = $bullet.getBoundingClientRect().left;
@@ -213,27 +219,6 @@ function moveGhostTo(direction) {
         GHOST_DOWN_COUNT++;
     }
     $ghostField.style.transform =`translate(${GHOST_LEFT_COUNT *GHOST_MOVE_WIDTH}px, ${GHOST_DOWN_COUNT *GHOST_MOVE_WIDTH}px)`;
-}
-
-// random ghost
-function createRandomGhost(count) {
-    for(let i = 0; i < count; i++) {
-        const $ghostEl = document.createElement('div');
-        $ghostEl.classList.add('ghost__container')
-        $ghostEl.innerHTML = `
-            <img class="ghost__img" src="images/enemy.png" data-direction=${isStartedFromLeft()}>`
-        $ghostField.appendChild($ghostEl);
-        const $ghostImgEl = document.querySelector('.ghost__img');
-
-        const $ghostElWidth = $ghostEl.getBoundingClientRect().width;
-
-        const x = createRandomNumber(
-            (WILL_MOVE_COUNT * GHOST_MOVE_WIDTH) + $ghostElWidth / 2,
-            $ghostFieldWidth - (WILL_MOVE_COUNT * GHOST_MOVE_WIDTH + $ghostElWidth / 2));
-        const y = createRandomNumber(0, $ghostFieldHeight);
-        $ghostEl.style.left = `${x}px`;
-        $ghostEl.style.top = `${y}px`;
-    }
 }
 
 function isStartedFromLeft() {
