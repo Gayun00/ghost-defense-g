@@ -16,6 +16,7 @@ export class Ghost {
 
     createRandomGhost() {
         for(let i = 0; i < this.ghostCount; i++) {
+            console.log(i)
             const $ghostEl = document.createElement('div');
             $ghostEl.classList.add('ghost__container')
             $ghostEl.innerHTML = `
@@ -36,8 +37,8 @@ export class Ghost {
         return Math.random() * (max - min) + min;
     }
 
-    moveGhostTo(direction) {
-        if (direction === 'left') {
+    moveGhostTo(isLeft) {
+        if (isLeft === true) {
             this.leftCount--;
             this.downCount++;
         } else  {
@@ -46,5 +47,15 @@ export class Ghost {
         }
         this.$ghostField.style.transform =`
             translate(${this.leftCount * this.moveWidth}px, ${this.downCount * this.moveWidth}px)`;
+    }
+
+    countAliveGhost() {
+        this.aliveGhostCount = 0;
+        this.$ghostField.forEach((ghost) => {
+            if(ghost.classList.contains('ghost__img--dead')) {
+                this.aliveGhostCount++;
+            }
+        })
+        return this.aliveGhostCount;
     }
 }

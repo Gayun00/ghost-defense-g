@@ -98,7 +98,8 @@ async function startGame() {
     $heroWrap.classList.remove('hide');
     $lifeContainer.classList.remove('hide');
     await ghost.createRandomGhost();
-    await handleMoveToDownLeft();
+    await moveGhost();
+    // await handleMoveToDownLeft();
     await getElementSize();
     await createLife(LIFE_COUNT);
 }
@@ -106,9 +107,9 @@ async function startGame() {
 
 
 function stopGame() {
+    console.log('stop game');
     started = false;
     displayLife();
-    console.log('stopped')
 }
 
 
@@ -132,6 +133,7 @@ function createLife(num) {
 
 
 function displayLife() {
+    console.log('display life')
     const $lifes = document.querySelectorAll('.life__img');
 
     $lifes.forEach((life) => {
@@ -148,51 +150,62 @@ function displayLife() {
         handleGameOver();
     } else {
         handleLevelUp();
+        return;
     }
 }
 
 function handleLevelUp() {
+    console.log('levelup')
     $levelUpBanner.classList.remove('remove');
+    $heroWrap.classList.add('hide');
     setTimeout(() => {
         $levelUpBanner.classList.add('remove');
-        // handleNextGame();
+        handleNextGame();
     }, 2000);
 }
 
-function handleMoveToDownLeft() {
-    if(started === false) return;
-    const moveDownLeft = setInterval(() => {
-        MOVED_COUNT++;
-        ghost.moveGhostTo('left');
-        handlePassedGhost();
-
-        if(MOVED_COUNT === WILL_MOVE_COUNT) {
-            clearInterval(moveDownLeft)
-            MOVED_COUNT = 0;
-            handleMoveToDownRight()
-        }
-    }, GHOST_SPEED)
+function handleNextGame() {
+    console.log('next game')
+    started = true;
+    MOVED_COUNT = 0;
+    // hero = new Hero(
+    //     LEFT_COUNT, UP_COUNT, SPEED, $bullet, BULLET_MOVED_COUNT, BULLET_SPEED
+    // );
+    // ghost = new Ghost(
+    //     GHOST_COUNT, GHOST_MOVE_WIDTH, WILL_MOVE_COUNT,
+    //     GHOST_LEFT_COUNT, GHOST_DOWN_COUNT
+    // );
+    $heroWrap.classList.remove('hide');
+    $ghostField.style.transform = `translate(0px, 0px)`;
+    // ghost.createRandomGhost();
+    // handleMoveToDownLeft();
 }
 
-function handleMoveToDownRight() {
-    if(started === false) return;
-    const moveDownRight = setInterval(() => {
+let left = true;
+$ghostField.addEventListener('transitionend', handlePassedGhost)
+
+function moveGhost() {
+    const move = setInterval(() => {
+        if(!started) {return;}
         MOVED_COUNT++;
-        ghost.moveGhostTo('right')
-        handlePassedGhost();
+        ghost.moveGhostTo(left);
 
         if(MOVED_COUNT === WILL_MOVE_COUNT) {
-            clearInterval(moveDownRight)
+            clearInterval(move);
+            left = !left;
             MOVED_COUNT = 0;
-            handleMoveToDownLeft();
+            moveGhost();
         }
-    }, GHOST_SPEED)
+    }, GHOST_SPEED);
 }
 
 function handlePassedGhost() {
+    console.log('handle passed ghost')
     const $ghostFieldLocation = $ghostField.getBoundingClientRect().top;
     if($ghostFieldLocation > 800) {
+        console.log('reached 800')
         stopGame()
+        return;
     }
 }
 
@@ -238,8 +251,6 @@ function handleShooting(e) {
                 $bullet.style.transform = `translateY(0px)`
                 ghostImg.classList.add('ghost__img--dead');
                 ALIVE_GHOST_COUNT--;
-                console.log(ALIVE_GHOST_COUNT)
-
         }
     })
 }
