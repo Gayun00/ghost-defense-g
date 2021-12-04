@@ -60,7 +60,7 @@ function handleBullet(e) {
 
 }
 
-const hero = new Hero(LEFT_COUNT, UP_COUNT, SPEED, $bullet, BULLET_MOVED_COUNT, BULLET_SPEED)
+let hero = new Hero(LEFT_COUNT, UP_COUNT, SPEED, $bullet, BULLET_MOVED_COUNT, BULLET_SPEED)
 
 
 // ghost
@@ -79,7 +79,7 @@ const GHOST_COUNT = 10;
 
 const $ghostField = document.querySelector('.ghost__field');
 
-const ghost = new Ghost(
+let ghost = new Ghost(
     GHOST_COUNT, GHOST_MOVE_WIDTH, WILL_MOVE_COUNT,
     GHOST_LEFT_COUNT, GHOST_DOWN_COUNT
 );
@@ -87,6 +87,7 @@ const ghost = new Ghost(
 const $startButton = document.querySelector('.start-button');
 const $heroWrap = document.querySelector('.hero__wrap');
 const $gameOverBanner = document.querySelector('.gameover-banner');
+const $levelUpBanner = document.querySelector('.levelup-banner');
 $startButton.addEventListener('click', startGame);
 
 
@@ -146,13 +147,16 @@ function displayLife() {
     if(LIFE_COUNT <= 0) {
         handleGameOver();
     } else {
-        // handleLevelUp();
+        handleLevelUp();
     }
 }
 
 function handleLevelUp() {
-    //display level up banner...
-    //
+    $levelUpBanner.classList.remove('remove');
+    setTimeout(() => {
+        $levelUpBanner.classList.add('remove');
+        // handleNextGame();
+    }, 2000);
 }
 
 function handleMoveToDownLeft() {
