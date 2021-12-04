@@ -14,8 +14,8 @@ export class Ghost {
         this.$ghostFieldHeight = this.$ghostField.getBoundingClientRect().height;
     }
 
-    createRandomGhost() {
-        for(let i = 0; i < this.ghostCount; i++) {
+    createRandomGhost(num) {
+        for(let i = 0; i < num; i++) {
             console.log('create ghost')
             const $ghostEl = document.createElement('div');
             $ghostEl.classList.add('ghost__container')
@@ -37,7 +37,7 @@ export class Ghost {
         return Math.random() * (max - min) + min;
     }
 
-    moveGhostTo(isLeft) {
+    moveGhostTo(isLeft, moveWidth) {
         if (isLeft === true) {
             this.leftCount--;
             this.downCount++;
@@ -46,7 +46,7 @@ export class Ghost {
             this.downCount++;
         }
         this.$ghostField.style.transform =`
-            translate(${this.leftCount * this.moveWidth}px, ${this.downCount * this.moveWidth}px)`;
+            translate(${this.leftCount * moveWidth}px, ${this.downCount * moveWidth}px)`;
     }
 
     countAliveGhost() {
