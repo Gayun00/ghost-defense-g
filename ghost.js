@@ -28,7 +28,6 @@ export class Ghost {
             const y = this.createRandomNumber(0, this.$ghostFieldHeight);
             $ghostEl.style.left = `${x}px`;
             $ghostEl.style.top = `${y}px`;
-            console.log
         }
     }
 

@@ -81,17 +81,39 @@ const $ghostField = document.querySelector('.ghost__field');
 
 const ghost = new Ghost(
     GHOST_COUNT, GHOST_MOVE_WIDTH, WILL_MOVE_COUNT,
-        GHOST_LEFT_COUNT, GHOST_DOWN_COUNT);
-    ghost.createRandomGhost();
+    GHOST_LEFT_COUNT, GHOST_DOWN_COUNT
+);
+
+const $startButton = document.querySelector('.start-button__img');
+const $heroWrap = document.querySelector('.hero__wrap');
+$startButton.addEventListener('click', startGame);
+
+const LIFE_COUNT = 10;
 
 async function startGame() {
-    await createRandomGhost(GHOST_COUNT)
-    await moveGhost();
+    $startButton.classList.add('hide');
+    $heroWrap.classList.remove('hide');
+    $lifeContainer.classList.remove('hide');
+    await ghost.createRandomGhost();
+    await handleMoveToDownLeft();
     await getElementSize();
+    await createLife(LIFE_COUNT);
 }
 
 function stopGame() {
     started = false;
+    console.log('stopped')
+}
+
+const $lifeContainer = document.querySelector('.life-container');
+
+function createLife(num) {
+    for(let i = 0; i < num; i++) {
+        const $lifeImgContainer = document.createElement('span');
+        $lifeImgContainer.classList.add('life__img-contianer');
+        $lifeImgContainer.innerHTML = `<img class="life__img" src="images/life.png" alt="life__img" >`
+        $lifeContainer.appendChild($lifeImgContainer);
+    }
 }
 
 function handleMoveToDownLeft() {
@@ -133,6 +155,11 @@ function handlePassedGhost() {
 
 // shooting
 
+let GHOST_WIDTH;
+let GHOST_HEIGHT;
+let BULLET_WIDTH;
+let BULLET_HEIGHT;
+
 function getElementSize() {
     const $ghost = document.querySelector('.ghost__container');
     GHOST_WIDTH = $ghost.getBoundingClientRect().width;
@@ -167,6 +194,8 @@ function handleShooting(e) {
     })
 }
 
-handleMoveToDownLeft();
+// handleMoveToDownLeft();
+
+
 
 
