@@ -104,16 +104,11 @@ async function startGame() {
     await createLife(LIFE_COUNT);
 }
 
-
-
 function stopGame() {
     console.log('stop game');
     started = false;
     displayLife();
 }
-
-
-
 
 function handleGameOver() {
     $heroWrap.classList.add('hide');
@@ -130,7 +125,6 @@ function createLife(num) {
         $lifeContainer.appendChild($lifeImgContainer);
     }
 }
-
 
 function displayLife() {
     console.log('display life')
@@ -166,7 +160,7 @@ function handleLevelUp() {
 
 function handleNextGame() {
     console.log('next game')
-    started = true;
+    // started = true;
     MOVED_COUNT = 0;
     // hero = new Hero(
     //     LEFT_COUNT, UP_COUNT, SPEED, $bullet, BULLET_MOVED_COUNT, BULLET_SPEED
@@ -182,7 +176,7 @@ function handleNextGame() {
 }
 
 let left = true;
-$ghostField.addEventListener('transitionend', handlePassedGhost)
+$ghostField.addEventListener('transitionend', handlePassedGhost);
 
 function moveGhost() {
     const move = setInterval(() => {
@@ -200,12 +194,12 @@ function moveGhost() {
 }
 
 function handlePassedGhost() {
+    if(!started) return;
     console.log('handle passed ghost')
     const $ghostFieldLocation = $ghostField.getBoundingClientRect().top;
     if($ghostFieldLocation > 800) {
         console.log('reached 800')
         stopGame()
-        return;
     }
 }
 

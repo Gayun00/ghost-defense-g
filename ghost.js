@@ -16,7 +16,7 @@ export class Ghost {
 
     createRandomGhost() {
         for(let i = 0; i < this.ghostCount; i++) {
-            console.log(i)
+            console.log('create ghost')
             const $ghostEl = document.createElement('div');
             $ghostEl.classList.add('ghost__container')
             $ghostEl.innerHTML = `
