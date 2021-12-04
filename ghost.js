@@ -1,6 +1,7 @@
 export class Ghost {
     constructor(ghostCount, moveWidth, willMoveCount, leftCount, downCount) {
         this.ghostCount = ghostCount;
+        this.aliveGhostCount;
 
         this.moveWidth = moveWidth;
         this.willMoveCount = willMoveCount;

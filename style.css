@@ -118,24 +118,37 @@ button {
     visibility: hidden;
 }
 
+.remove {
+    display: none;
+}
+
+.button__wrap {
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    top: 10%;
+    width: 100%;
+    /* background-color: yellowgreen; */
+
+}
+
 
 .button {
     display: flex;
     justify-content: center;
-    align-items: center;
+    width: 100%;
+    /* background-color: turquoise; */
 }
 
 .start-button {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    text-align: center;
     width: 40%;
-    height: 50%;
+    height: 100%;
+    /* background-color: violet; */
 }
 
 .start-button__img {
     width: 100%;
-    /* height: 100%; */
 }
 
 .start-button:hover {
@@ -144,11 +157,19 @@ button {
 }
 
 .life-container {
+    text-align: right;
     padding: 20px;
-    /* width: 50%; */
-    /* background-color: turquoise; */
 }
+
+
 
 .life__img {
     width: 30px;
 }
+
+.gameover-banner{
+    text-align: center;
+    width: 30%;
+    /* background-color: wheat; */
+}
+

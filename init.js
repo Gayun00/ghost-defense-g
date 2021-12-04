@@ -84,14 +84,16 @@ const ghost = new Ghost(
     GHOST_LEFT_COUNT, GHOST_DOWN_COUNT
 );
 
-const $startButton = document.querySelector('.start-button__img');
+const $startButton = document.querySelector('.start-button');
 const $heroWrap = document.querySelector('.hero__wrap');
+const $gameOverBanner = document.querySelector('.gameover-banner');
 $startButton.addEventListener('click', startGame);
+
 
 const LIFE_COUNT = 10;
 
 async function startGame() {
-    $startButton.classList.add('hide');
+    $startButton.classList.add('remove');
     $heroWrap.classList.remove('hide');
     $lifeContainer.classList.remove('hide');
     await ghost.createRandomGhost();
@@ -100,9 +102,24 @@ async function startGame() {
     await createLife(LIFE_COUNT);
 }
 
+
+
 function stopGame() {
     started = false;
+    displayLife();
     console.log('stopped')
+
+
+
+    // console.log(ghost.countAliveGhost());
+}
+
+
+
+
+function handleGameOver() {
+    $heroWrap.classList.add('hide');
+    $gameOverBanner.classList.remove('remove');
 }
 
 const $lifeContainer = document.querySelector('.life-container');
@@ -114,6 +131,23 @@ function createLife(num) {
         $lifeImgContainer.innerHTML = `<img class="life__img" src="images/life.png" alt="life__img" >`
         $lifeContainer.appendChild($lifeImgContainer);
     }
+}
+
+
+function displayLife() {
+    const $lifes = document.querySelectorAll('.life__img');
+
+    $lifes.forEach((life) => {
+        if(ALIVE_GHOST_COUNT === 0) {
+            return;
+        }
+        if(!life.classList.contains('hide')) {
+            life.classList.add('hide');
+            ALIVE_GHOST_COUNT--;
+            console.log(ALIVE_GHOST_COUNT);
+        }
+
+    })
 }
 
 function handleMoveToDownLeft() {
@@ -160,6 +194,9 @@ let GHOST_HEIGHT;
 let BULLET_WIDTH;
 let BULLET_HEIGHT;
 
+let ALIVE_GHOST_COUNT = GHOST_COUNT;
+
+
 function getElementSize() {
     const $ghost = document.querySelector('.ghost__container');
     GHOST_WIDTH = $ghost.getBoundingClientRect().width;
@@ -168,6 +205,7 @@ function getElementSize() {
     BULLET_WIDTH = $bullet.getBoundingClientRect().width;
     BULLET_HEIGHT = $bullet.getBoundingClientRect().height;
 }
+
 
 function handleShooting(e) {
     const bulletX = $bullet.getBoundingClientRect().left;
@@ -190,6 +228,9 @@ function handleShooting(e) {
                 BULLET_MOVED_COUNT = 0;
                 $bullet.style.transform = `translateY(0px)`
                 ghostImg.classList.add('ghost__img--dead');
+                ALIVE_GHOST_COUNT--;
+                console.log(ALIVE_GHOST_COUNT)
+
         }
     })
 }
