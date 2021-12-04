@@ -90,7 +90,7 @@ const $gameOverBanner = document.querySelector('.gameover-banner');
 $startButton.addEventListener('click', startGame);
 
 
-const LIFE_COUNT = 10;
+let LIFE_COUNT = 10;
 
 async function startGame() {
     $startButton.classList.add('remove');
@@ -108,10 +108,6 @@ function stopGame() {
     started = false;
     displayLife();
     console.log('stopped')
-
-
-
-    // console.log(ghost.countAliveGhost());
 }
 
 
@@ -144,10 +140,19 @@ function displayLife() {
         if(!life.classList.contains('hide')) {
             life.classList.add('hide');
             ALIVE_GHOST_COUNT--;
-            console.log(ALIVE_GHOST_COUNT);
+            LIFE_COUNT--;
         }
-
     })
+    if(LIFE_COUNT <= 0) {
+        handleGameOver();
+    } else {
+        // handleLevelUp();
+    }
+}
+
+function handleLevelUp() {
+    //display level up banner...
+    //
 }
 
 function handleMoveToDownLeft() {
@@ -234,9 +239,3 @@ function handleShooting(e) {
         }
     })
 }
-
-// handleMoveToDownLeft();
-
-
-
-
