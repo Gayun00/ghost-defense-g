@@ -155,27 +155,23 @@ function handleLevelUp() {
     $heroWrap.classList.add('hide');
     setTimeout(() => {
         $levelUpBanner.classList.add('remove');
-        handleNextGame();
+        handleNextGame(5,5);
     }, 2000);
 }
 
 let ADD_GHOST_COUNT = 5;
 let ADD_GHOST_MOVE_WIDTH = 5;
 
-function handleNextGame() {
-    ALIVE_GHOST_COUNT = GHOST_COUNT;
-    GHOST_MOVE_WIDTH += ADD_GHOST_MOVE_WIDTH;
-    console.log(ADD_GHOST_COUNT)
-    console.log(ADD_GHOST_MOVE_WIDTH)
-    console.log('next game')
-    // MOVED_COUNT = 0;
+function handleNextGame(ghostCount, moveWidth) {
+
+    MOVED_COUNT = 0;
 
     $heroWrap.classList.remove('hide');
     $ghostField.style.transform = `translate(0px, 0px)`;
     displayGhosts();
-    ghost.createRandomGhost(GHOST_COUNT);
-    started = true;
-    moveGhost(GHOST_MOVE_WIDTH);
+    ghost.createRandomGhost(ghostCount);
+    // started = true;
+    // moveGhost(moveWidth);
 }
 
 let isLeft = true;
