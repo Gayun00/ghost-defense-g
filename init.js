@@ -94,6 +94,7 @@ const gameStartSound = new Audio('audio/start.ogg');
 const dyingSound = new Audio('audio/dying.wav');
 const gameWinSound = new Audio('audio/gameWin.wav');
 const gameOverSound = new Audio('audio/gameOver.wav');
+const levelUpSound = new Audio('audio/levelup.mp3');
 const backgroundSound = new Audio('audio/background.wav');
 gameStartSound.volume = 0.4;
 backgroundSound.volume = 0.05;
@@ -201,6 +202,7 @@ function handleLevelUp() {
     level++;
     $heroWrap.classList.add('hide');
     if(level < 3) {
+    levelUpSound.play();
         let willMoveCount = WILL_MOVE_COUNT + level * 10;
         let speed = GHOST_SPEED - level * 5;
         $levelUpBanner.classList.remove('remove');
@@ -269,11 +271,8 @@ function handlePassedGhost() {
         stopGame()
     }
     const aliveGhost = ghost.countAliveGhost();
-    console.log(aliveGhost)
     if(aliveGhost === 0) {
         stopGame()
-    } else {
-        'not yet...'
     }
 }
 
@@ -312,8 +311,8 @@ function handleShooting(e) {
             setTimeout(() => {
                 ghostImg.classList.add('hide');
             }, 400);
-        } else if(ghostX - 30 < bulletX && bulletX<  ghostX + 30
-            &&ghostY - 10 <bulletY && bulletY < ghostY + 10){
+        } else if(ghostX - 30 < bulletX && bulletX <  ghostX + 30
+            &&ghostY - 10 < bulletY && bulletY < ghostY + 10){
                 clearInterval(moveBullet)
                 BULLET_MOVED_COUNT = 0;
                 $bullet.style.transform = `translateY(0px)`
