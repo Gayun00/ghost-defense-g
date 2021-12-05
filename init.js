@@ -91,7 +91,7 @@ const $gameWinBanner = document.querySelector('.gamewin-banner');
 const $button = document.querySelector('.button');
 $button.addEventListener('click', handleButtonClick);
 $startButton.addEventListener('click', startGame);
-let LIFE_COUNT = 20;
+let LIFE_COUNT = 5;
 
 function handleButtonClick(e) {
     let targetClass = e.target.getAttribute('class');
@@ -121,11 +121,18 @@ function stopGame() {
 }
 
 function restartGame() {
+    clearInterval(move);
     $gameWinBanner.classList.add('remove');
-    console.log(LIFE_COUNT, GHOST_COUNT, MOVED_COUNT, WILL_MOVE_COUNT, GHOST_SPEED)
-    LIFE_COUNT = 20;
+    LIFE_COUNT = 5;
     MOVED_COUNT = 0;
+    $ghostField.style.transform = `translate(0px, 0px)`;
+    $gameOverBanner.classList.add('remove');
+    started = true;
+    GHOST_LEFT_COUNT = 0;
+    GHOST_DOWN_COUNT = 0;
     startGame();
+    console.log(LIFE_COUNT, GHOST_COUNT, MOVED_COUNT, WILL_MOVE_COUNT, GHOST_SPEED)
+
 }
 
 function handleGameWin() {
@@ -133,6 +140,7 @@ function handleGameWin() {
 }
 
 function handleGameOver() {
+    console.log('gameover')
     $heroWrap.classList.add('hide');
     $gameOverBanner.classList.remove('remove');
 }
@@ -207,11 +215,12 @@ let isLeft = true;
 $ghostField.addEventListener('transitionend', handlePassedGhost);
 
 function moveGhost(willMoveCount, speed) {
-     move = setInterval(() => {
-        console.log('move interval is running...')
+    move = setInterval(() => {
+        // console.log('move interval is running...')
         if(!started) {return;}
         MOVED_COUNT++;
         moveGhostTo(isLeft);
+        console.log('moveGhostTo is running...')
 
         if(MOVED_COUNT === willMoveCount) {
             clearInterval(move);
@@ -233,15 +242,19 @@ function moveGhostTo(isLeft) {
         GHOST_DOWN_COUNT++;
 
     }
+    console.log(started)
     $ghostField.style.transform =`
         translate(${GHOST_LEFT_COUNT * GHOST_MOVE_WIDTH}px, ${GHOST_DOWN_COUNT * GHOST_MOVE_WIDTH}px)`;
     }
 
 function handlePassedGhost() {
+    console.log('handle passed')
     if(!started) return;
     const $ghostFieldLocation = $ghostField.getBoundingClientRect().top;
+    console.log($ghostFieldLocation)
     if($ghostFieldLocation > 800) {
         stopGame()
+        console.log('stop game')
     }
 }
 
