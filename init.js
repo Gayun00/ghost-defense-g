@@ -80,8 +80,7 @@ let GHOST_COUNT = 5;
 const $ghostField = document.querySelector('.ghost__field');
 
 let ghost = new Ghost(
-    GHOST_COUNT, GHOST_MOVE_WIDTH, WILL_MOVE_COUNT,
-    GHOST_LEFT_COUNT, GHOST_DOWN_COUNT
+    GHOST_COUNT, GHOST_MOVE_WIDTH, WILL_MOVE_COUNT
 );
 
 const $startButton = document.querySelector('.start-button');
@@ -109,6 +108,7 @@ function stopGame() {
     console.log('stop game');
     started = false;
     displayLife();
+    clearInterval(move);
 }
 
 function handleGameOver() {
@@ -129,6 +129,7 @@ function createLife(num) {
 
 function displayLife() {
     console.log('display life')
+    ALIVE_GHOST_COUNT = countAliveGhost();
     const $lifes = document.querySelectorAll('.life__img');
 
     $lifes.forEach((life) => {
@@ -149,13 +150,24 @@ function displayLife() {
     }
 }
 
+function countAliveGhost() {
+    ALIVE_GHOST_COUNT= 0;
+    const $ghosts = document.querySelectorAll('.ghost__img');
+    $ghosts.forEach((ghost) => {
+        if(ghost.classList.contains('ghost__img--dead')) {
+            ALIVE_GHOST_COUNT++;
+        }
+    })
+    return ALIVE_GHOST_COUNT;
+}
+
 function handleLevelUp() {
     console.log('levelup')
     $levelUpBanner.classList.remove('remove');
     $heroWrap.classList.add('hide');
     setTimeout(() => {
         $levelUpBanner.classList.add('remove');
-        handleNextGame(5,5);
+        handleNextGame(5,1);
     }, 2000);
 }
 
@@ -170,18 +182,25 @@ function handleNextGame(ghostCount, moveWidth) {
     $ghostField.style.transform = `translate(0px, 0px)`;
     displayGhosts();
     ghost.createRandomGhost(ghostCount);
-    // started = true;
-    // moveGhost(moveWidth);
+    started = true;
+    GHOST_LEFT_COUNT = 0;
+    GHOST_DOWN_COUNT = 0;
+    moveGhost(moveWidth);
 }
-
+let move;
 let isLeft = true;
 $ghostField.addEventListener('transitionend', handlePassedGhost);
 
 function moveGhost(moveWidth) {
-    const move = setInterval(() => {
+    // GHOST_LEFT_COUNT = 0;
+    // GHOST_DOWN_COUNT = 0;
+     move = setInterval(() => {
+        console.log('move interval'+started, MOVED_COUNT)
+
         if(!started) {return;}
         MOVED_COUNT++;
-        ghost.moveGhostTo(isLeft, moveWidth);
+        moveGhostTo(isLeft, moveWidth);
+
 
         if(MOVED_COUNT === WILL_MOVE_COUNT) {
             clearInterval(move);
@@ -189,8 +208,28 @@ function moveGhost(moveWidth) {
             MOVED_COUNT = 0;
             moveGhost(moveWidth);
         }
+        console.log(moveWidth, GHOST_SPEED)
+
     }, GHOST_SPEED);
+    move;
+
 }
+
+
+
+function moveGhostTo(isLeft, moveWidth) {
+    if (isLeft === true) {
+        GHOST_LEFT_COUNT--;
+        GHOST_DOWN_COUNT++;
+
+    } else  {
+        GHOST_LEFT_COUNT++;
+        GHOST_DOWN_COUNT++;
+
+    }
+    $ghostField.style.transform =`
+        translate(${GHOST_LEFT_COUNT * moveWidth}px, ${GHOST_DOWN_COUNT * moveWidth}px)`;
+    }
 
 function displayGhosts() {
     const $ghosts = document.querySelectorAll('.ghost__img');
@@ -200,8 +239,6 @@ function displayGhosts() {
             ghost.classList.remove('hide');
         }
     })
-    //1. 돌면서 hide가 있으면 제거해 모두 나타내기
-    //2. 추가 ghost 생성하기
 }
 
 function handlePassedGhost() {

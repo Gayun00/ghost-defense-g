@@ -1,13 +1,13 @@
 export class Ghost {
-    constructor(ghostCount, moveWidth, willMoveCount, leftCount, downCount) {
+    constructor(ghostCount, moveWidth, willMoveCount) {
         this.ghostCount = ghostCount;
         this.aliveGhostCount;
 
         this.moveWidth = moveWidth;
         this.willMoveCount = willMoveCount;
 
-        this.leftCount = leftCount;
-        this.downCount = downCount;
+        // this.leftCount = leftCount;
+        // this.downCount = downCount;
 
         this.$ghostField = document.querySelector('.ghost__field');
         this.$ghostFieldWidth = this.$ghostField.getBoundingClientRect().width;
@@ -37,17 +37,7 @@ export class Ghost {
         return Math.random() * (max - min) + min;
     }
 
-    moveGhostTo(isLeft, moveWidth) {
-        if (isLeft === true) {
-            this.leftCount--;
-            this.downCount++;
-        } else  {
-            this.leftCount++;
-            this.downCount++;
-        }
-        this.$ghostField.style.transform =`
-            translate(${this.leftCount * moveWidth}px, ${this.downCount * moveWidth}px)`;
-    }
+
 
     countAliveGhost() {
         this.aliveGhostCount = 0;
