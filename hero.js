@@ -91,4 +91,3 @@ export class Hero {
         this.bulletY = this.$bullet.getBoundingClientRect().top;
     }
 }
-
