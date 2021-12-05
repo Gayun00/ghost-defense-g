@@ -67,21 +67,9 @@ let hero = new Hero(LEFT_COUNT, UP_COUNT, SPEED, $bullet, BULLET_MOVED_COUNT, BU
 
 let started = true;
 
-let GHOST_DOWN_COUNT = 0;
-let GHOST_LEFT_COUNT = 0;
-
-let MOVED_COUNT = 0;
-let WILL_MOVE_COUNT = 15;
-let GHOST_MOVE_WIDTH = 1;
-
-let GHOST_SPEED =  20;
-let GHOST_COUNT = 5;
-
 const $ghostField = document.querySelector('.ghost__field');
 
-let ghost = new Ghost(
-    GHOST_COUNT, GHOST_MOVE_WIDTH, WILL_MOVE_COUNT
-);
+let ghost = new Ghost();
 
 const $startButton = document.querySelector('.start-button');
 const $heroWrap = document.querySelector('.hero__wrap');
@@ -96,6 +84,7 @@ const gameWinSound = new Audio('audio/gameWin.wav');
 const gameOverSound = new Audio('audio/gameOver.wav');
 const levelUpSound = new Audio('audio/levelup.mp3');
 const backgroundSound = new Audio('audio/background.wav');
+
 gameStartSound.volume = 0.4;
 backgroundSound.volume = 0.05;
 
@@ -114,7 +103,6 @@ function handleButtonClick(e) {
 
 async function startGame() {
     level = 0;
-    ALIVE_GHOST_COUNT = GHOST_COUNT;
     backgroundSound.play();
     $startButton.classList.add('remove');
     $heroWrap.classList.remove('hide');
@@ -124,7 +112,7 @@ async function startGame() {
         backgroundSound.play();
     }, 2000);
     await ghost.createRandomGhost(level);
-    await moveGhost(WILL_MOVE_COUNT, GHOST_SPEED);
+    await ghost.moveGhost();
     await getElementSize();
     await createLife(LIFE_COUNT);
 }
@@ -132,19 +120,19 @@ async function startGame() {
 function stopGame() {
     started = false;
     displayLife();
-    clearInterval(move);
+    clearInterval(ghost.move);
 }
 
 function restartGame() {
-    clearInterval(move);
+    clearInterval(ghost.move);
     $gameWinBanner.classList.add('remove');
     LIFE_COUNT = 5;
-    MOVED_COUNT = 0;
+    ghost.movedCount = 0;
     $ghostField.style.transform = `translate(0px, 0px)`;
     $gameOverBanner.classList.add('remove');
     started = true;
-    GHOST_LEFT_COUNT = 0;
-    GHOST_DOWN_COUNT = 0;
+    ghost.leftCount = 0;
+    ghost.downCount = 0;
     startGame();
 
 }
@@ -203,12 +191,12 @@ function handleLevelUp() {
     $heroWrap.classList.add('hide');
     if(level < 3) {
     levelUpSound.play();
-        let willMoveCount = WILL_MOVE_COUNT + level * 10;
-        let speed = GHOST_SPEED - level * 5;
+        ghost.willMoveCount = ghost.willMoveCount+ level * 10;
+        ghost.speed = ghost.speed - level * 5;
         $levelUpBanner.classList.remove('remove');
         setTimeout(() => {
             $levelUpBanner.classList.add('remove');
-            handleNextGame(willMoveCount, speed);
+            handleNextGame();
         }, 2000);
     } else {
         handleGameWin();
@@ -216,53 +204,23 @@ function handleLevelUp() {
 }
 
 
-function handleNextGame(willMoveCount, speed) {
+function handleNextGame() {
 
-    MOVED_COUNT = 0;
+    ghost.movedCount = 0;
 
     $heroWrap.classList.remove('hide');
     $ghostField.style.transform = `translate(0px, 0px)`;
 
     ghost.createRandomGhost(level);
     started = true;
-    GHOST_LEFT_COUNT = 0;
-    GHOST_DOWN_COUNT = 0;
-    moveGhost(willMoveCount, speed);
+    ghost.started = true;
+    ghost.leftCount = 0;
+    ghost.downCount = 0;
+    ghost.moveGhost();
 }
 
-let move;
-let isLeft = true;
 $ghostField.addEventListener('transitionend', handlePassedGhost);
 
-function moveGhost(willMoveCount, speed) {
-    move = setInterval(() => {
-        if(!started) {return;}
-        MOVED_COUNT++;
-        moveGhostTo(isLeft);
-
-        if(MOVED_COUNT === willMoveCount) {
-            clearInterval(move);
-            isLeft = !isLeft;
-            MOVED_COUNT = 0;
-            moveGhost(willMoveCount, speed);
-        }
-    }, speed);
-    move;
-}
-
-function moveGhostTo(isLeft) {
-    if (isLeft === true) {
-        GHOST_LEFT_COUNT--;
-        GHOST_DOWN_COUNT++;
-
-    } else  {
-        GHOST_LEFT_COUNT++;
-        GHOST_DOWN_COUNT++;
-
-    }
-    $ghostField.style.transform =`
-        translate(${GHOST_LEFT_COUNT * GHOST_MOVE_WIDTH}px, ${GHOST_DOWN_COUNT * GHOST_MOVE_WIDTH}px)`;
-    }
 
 function handlePassedGhost() {
     if(!started) return;
@@ -275,6 +233,7 @@ function handlePassedGhost() {
         stopGame()
     }
 }
+
 
 // shooting
 

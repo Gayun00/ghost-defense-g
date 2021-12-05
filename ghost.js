@@ -1,13 +1,17 @@
 export class Ghost {
-    constructor(ghostCount, moveWidth, willMoveCount) {
-        this.ghostCount = ghostCount;
-        this.aliveGhostCount;
+    constructor() {
+        this.started = true;
+        this.left = true;
+        this.ghostCount = 5;
+        this.aliveGhostCount = 0;
 
-        this.moveWidth = moveWidth;
-        this.willMoveCount = willMoveCount;
-
-        // this.leftCount = leftCount;
-        // this.downCount = downCount;
+        this.moveWidth = 1;
+        this.movedCount = 0;
+        this.move;
+        this.leftCount = 0;
+        this.downCount = 0;
+        this.willMoveCount = 15;
+        this.ghostSpeed = 20;
 
         this.$ghostField = document.querySelector('.ghost__field');
         this.$ghostFieldWidth = this.$ghostField.getBoundingClientRect().width;
@@ -37,6 +41,34 @@ export class Ghost {
     createRandomNumber(min, max) {
         return Math.random() * (max - min) + min;
     }
+
+    moveGhost() {
+        this.move = setInterval(() => {
+            if(!this.started) {return;}
+            this.movedCount++;
+            this.moveGhostTo(this.isLeft);
+
+            if(this.movedCount === this.willMoveCount) {
+                clearInterval(this.move);
+                this.isLeft = !this.isLeft;
+                this.movedCount= 0;
+                this.moveGhost(this.willMoveCount, this.speed);
+            }
+        }, this.speed);
+        this.move;
+    }
+
+    moveGhostTo(isLeft) {
+        if (isLeft === true) {
+            this.leftCount--;
+            this.downCount++;
+        } else  {
+            this.leftCount++;
+            this.downCount++;
+        }
+        this.$ghostField.style.transform =`
+            translate(${this.leftCount * this.moveWidth}px, ${this.downCount * this.moveWidth}px)`;
+        }
 
     countAliveGhost() {
         this.aliveGhostCount = 0;
