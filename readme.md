@@ -7,7 +7,8 @@
 
 <br>
 
-살아남은 채로 길목을 통과하는 `ghost`의 수만큼 life가 감소합니다.
+살아남은 채로 길목을 통과하는 `ghost`의 수만큼 `life`가 감소합니다.
+`life가 0이되면 패배합니다.
 
 ![](https://images.velog.io/images/gygy/post/41f81b8c-2284-4cbe-bd28-cba4cf814141/ezgif.com-gif-maker%20(2).gif)
 
