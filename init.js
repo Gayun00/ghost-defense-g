@@ -90,7 +90,14 @@ const $levelUpBanner = document.querySelector('.levelup-banner');
 const $gameWinBanner = document.querySelector('.gamewin-banner');
 const $button = document.querySelector('.button');
 
+const gameStartSound = new Audio('audio/start.ogg');
 const dyingSound = new Audio('audio/dying.wav');
+const gameWinSound = new Audio('audio/gameWin.wav');
+const gameOverSound = new Audio('audio/gameOver.wav');
+const backgroundSound = new Audio('audio/background.wav');
+gameStartSound.volume = 0.4;
+backgroundSound.volume = 0.05;
+
 $button.addEventListener('click', handleButtonClick);
 $startButton.addEventListener('click', startGame);
 let LIFE_COUNT = 5;
@@ -107,9 +114,14 @@ function handleButtonClick(e) {
 async function startGame() {
     level = 0;
     ALIVE_GHOST_COUNT = GHOST_COUNT;
+    backgroundSound.play();
     $startButton.classList.add('remove');
     $heroWrap.classList.remove('hide');
     $lifeContainer.classList.remove('hide');
+    gameStartSound.play();
+    setTimeout(() => {
+        backgroundSound.play();
+    }, 2000);
     await ghost.createRandomGhost(level);
     await moveGhost(WILL_MOVE_COUNT, GHOST_SPEED);
     await getElementSize();
@@ -137,12 +149,18 @@ function restartGame() {
 }
 
 function handleGameWin() {
-
+    $gameWinBanner.classList.remove('remove');
+    backgroundSound.pause();
+    backgroundSound.currentTime = 0;
+    gameWinSound.play();
 }
 
 function handleGameOver() {
     $heroWrap.classList.add('hide');
     $gameOverBanner.classList.remove('remove');
+    backgroundSound.pause();
+    backgroundSound.currentTime = 0;
+    gameOverSound.play()
 }
 
 const $lifeContainer = document.querySelector('.life-container');
@@ -191,7 +209,7 @@ function handleLevelUp() {
             handleNextGame(willMoveCount, speed);
         }, 2000);
     } else {
-        $gameWinBanner.classList.remove('remove');
+        handleGameWin();
     }
 }
 
