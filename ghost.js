@@ -14,7 +14,7 @@ export class Ghost {
         this.leftCount = 0;
         this.downCount = 0;
         this.willMoveCount = 15;
-        this.ghostSpeed = 20;
+        this.ghostSpeed = 1000;
 
         this.x;
         this.y;
@@ -64,7 +64,7 @@ export class Ghost {
                 clearInterval(this.move);
                 this.isLeft = !this.isLeft;
                 this.movedCount= 0;
-                this.moveGhost(this.willMoveCount, this.speed);
+                this.moveGhost();
             }
         }, this.speed);
         this.move;
@@ -92,5 +92,10 @@ export class Ghost {
             }
         })
         return this.aliveGhostCount;
+    }
+
+    handlePassedGhost() {
+        if(!this.started) return;
+
     }
 }

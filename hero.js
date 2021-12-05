@@ -86,9 +86,9 @@ export class Hero {
         }
     }
 
-    getBulletPox() {
-        bulletX = $bullet.getBoundingClientRect().left;
-        bulletY = $bullet.getBoundingClientRect().top;
+    getBulletPos() {
+        this.bulletX = this.$bullet.getBoundingClientRect().left;
+        this.bulletY = this.$bullet.getBoundingClientRect().top;
     }
 }
 

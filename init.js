@@ -6,26 +6,24 @@ import {Ghost} from './ghost.js';
 import {Hero} from './hero.js';
 import {Sound} from './sound.js';
 
-let hero = new Hero();
+const hero = new Hero();
 
 window.addEventListener('keydown', handleHeroAndBullet);
+hero.$bullet.addEventListener('transitionend', handleShooting);
 
 function handleHeroAndBullet(e) {
     hero.handleHeroAndBullet(e);
 }
 
-hero.$bullet.addEventListener('transitionend', handleShooting);
 
 // ghost
+const ghost = new Ghost();
 
 let started = true;
 
-const $ghostField = document.querySelector('.ghost__field');
-
-let ghost = new Ghost();
-
+// const $ghostField = document.querySelector('.ghost__field');
 const $startButton = document.querySelector('.start-button');
-const $heroWrap = document.querySelector('.hero__wrap');
+// const $heroWrap = document.querySelector('.hero__wrap');
 const $gameOverBanner = document.querySelector('.gameover-banner');
 const $levelUpBanner = document.querySelector('.levelup-banner');
 const $gameWinBanner = document.querySelector('.gamewin-banner');
@@ -51,7 +49,7 @@ async function startGame() {
     level = 0;
     sound.playBGM();
     $startButton.classList.add('remove');
-    $heroWrap.classList.remove('hide');
+    hero.$heroWithBullet.classList.remove('hide');
     $lifeContainer.classList.remove('hide');
     sound.playStart();
     setTimeout(() => {
@@ -74,7 +72,7 @@ function restartGame() {
     $gameWinBanner.classList.add('remove');
     LIFE_COUNT = 5;
     ghost.movedCount = 0;
-    $ghostField.style.transform = `translate(0px, 0px)`;
+    ghost.$ghostField.style.transform = `translate(0px, 0px)`;
     $gameOverBanner.classList.add('remove');
     started = true;
     ghost.leftCount = 0;
@@ -90,7 +88,7 @@ function handleGameWin() {
 }
 
 function handleGameOver() {
-    $heroWrap.classList.add('hide');
+    hero.$heroWithBullet.classList.add('hide');
     $gameOverBanner.classList.remove('remove');
     sound.stopBGM();
     sound.playGameOver();
@@ -108,15 +106,15 @@ function createLife(num) {
 }
 
 function displayLife() {
-    ALIVE_GHOST_COUNT = ghost.countAliveGhost();
+    ghost.aliveGhostCount = ghost.countAliveGhost();
     const $lifes = document.querySelectorAll('.life__img');
     $lifes.forEach((life) => {
-        if(ALIVE_GHOST_COUNT === 0) {
+        if(ghost.aliveGhostCount === 0) {
             return;
         }
         if(!life.classList.contains('hide')) {
             life.classList.add('hide');
-            ALIVE_GHOST_COUNT--;
+            ghost.aliveGhostCount--;
             LIFE_COUNT--;
         }
     })
@@ -132,7 +130,7 @@ let level = 0;
 
 function handleLevelUp() {
     level++;
-    $heroWrap.classList.add('hide');
+    hero.$heroWithBullet.classList.add('hide');
     if(level < 3) {
     sound.playLevelUp();
         ghost.willMoveCount = ghost.willMoveCount+ level * 10;
@@ -152,8 +150,8 @@ function handleNextGame() {
 
     ghost.movedCount = 0;
 
-    $heroWrap.classList.remove('hide');
-    $ghostField.style.transform = `translate(0px, 0px)`;
+    hero.$heroWithBullet.classList.remove('hide');
+    ghost.$ghostField.style.transform = `translate(0px, 0px)`;
 
     ghost.createRandomGhost(level);
     started = true;
@@ -163,12 +161,12 @@ function handleNextGame() {
     ghost.moveGhost();
 }
 
-$ghostField.addEventListener('transitionend', handlePassedGhost);
+ghost.$ghostField.addEventListener('transitionend', handlePassedGhost);
 
 
 function handlePassedGhost() {
     if(!started) return;
-    const $ghostFieldLocation = $ghostField.getBoundingClientRect().top;
+    const $ghostFieldLocation = ghost.$ghostField.getBoundingClientRect().top;
     if($ghostFieldLocation > 800) {
         stopGame()
     }
@@ -187,7 +185,7 @@ function getElementSize() {
 }
 
 function handleShooting(e) {
-    hero.getBulletSize();
+    hero.getBulletPos();
 
     //getGhostPos
     const $ghosts = document.querySelectorAll('.ghost__container');
@@ -201,13 +199,13 @@ function handleShooting(e) {
             setTimeout(() => {
                 ghostImg.classList.add('hide');
             }, 400);
-        } else if(ghostX - 30 < bulletX && bulletX <  ghostX + 30
-            &&ghostY - 10 < bulletY && bulletY < ghostY + 10){
+        } else if(ghostX - 30 < hero.bulletX && hero.bulletX <  ghostX + 30
+            &&ghostY - 10 < hero.bulletY && hero.bulletY < ghostY + 10){
                 clearInterval(hero.moveBullet)
-                BULLET_MOVED_COUNT = 0;
+                hero.bulletMovedCount = 0;
                 hero.$bullet.style.transform = `translateY(0px)`
                 ghostImg.classList.add('ghost__img--dead');
-                ghost.aliveGhost--;
+                ghost.aliveGhostCount--;
                 sound.playDying();
         }
     })
