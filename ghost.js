@@ -41,8 +41,10 @@ export class Ghost {
 
     countAliveGhost() {
         this.aliveGhostCount = 0;
-        this.$ghostField.forEach((ghost) => {
-            if(ghost.classList.contains('ghost__img--dead')) {
+        const $ghosts = document.querySelectorAll('.ghost__img');
+
+        $ghosts.forEach((ghost) => {
+            if(!ghost.classList.contains('ghost__img--dead')) {
                 this.aliveGhostCount++;
             }
         })

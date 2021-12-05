@@ -128,10 +128,8 @@ function createLife(num) {
 }
 
 function displayLife() {
-    console.log('display life')
-    ALIVE_GHOST_COUNT = countAliveGhost();
+    ALIVE_GHOST_COUNT = ghost.countAliveGhost();
     const $lifes = document.querySelectorAll('.life__img');
-
     $lifes.forEach((life) => {
         if(ALIVE_GHOST_COUNT === 0) {
             return;
@@ -148,17 +146,6 @@ function displayLife() {
         handleLevelUp();
         return;
     }
-}
-
-function countAliveGhost() {
-    ALIVE_GHOST_COUNT= 0;
-    const $ghosts = document.querySelectorAll('.ghost__img');
-    $ghosts.forEach((ghost) => {
-        if(ghost.classList.contains('ghost__img--dead')) {
-            ALIVE_GHOST_COUNT++;
-        }
-    })
-    return ALIVE_GHOST_COUNT;
 }
 
 function handleLevelUp() {
@@ -208,7 +195,6 @@ function moveGhost(moveWidth) {
             MOVED_COUNT = 0;
             moveGhost(moveWidth);
         }
-        console.log(moveWidth, GHOST_SPEED)
 
     }, GHOST_SPEED);
     move;
