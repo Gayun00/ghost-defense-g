@@ -14,9 +14,10 @@ export class Ghost {
         this.$ghostFieldHeight = this.$ghostField.getBoundingClientRect().height;
     }
 
-    createRandomGhost(num) {
-        for(let i = 0; i < num; i++) {
-            console.log('created ghost')
+    createRandomGhost(level) {
+        console.log('level'+level);
+        this.$ghostField.innerHTML = '';
+        for(let i = 0; i < (level + 1) * this.ghostCount; i++) {
             const $ghostEl = document.createElement('div');
             $ghostEl.classList.add('ghost__container')
             $ghostEl.innerHTML = `

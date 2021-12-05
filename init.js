@@ -103,11 +103,12 @@ function handleButtonClick(e) {
 
 
 async function startGame() {
+    level = 0;
     ALIVE_GHOST_COUNT = GHOST_COUNT;
     $startButton.classList.add('remove');
     $heroWrap.classList.remove('hide');
     $lifeContainer.classList.remove('hide');
-    await ghost.createRandomGhost(GHOST_COUNT);
+    await ghost.createRandomGhost(level);
     await moveGhost(WILL_MOVE_COUNT, GHOST_SPEED);
     await getElementSize();
     await createLife(LIFE_COUNT);
@@ -122,7 +123,9 @@ function stopGame() {
 function restartGame() {
     $gameWinBanner.classList.add('remove');
     console.log(LIFE_COUNT, GHOST_COUNT, MOVED_COUNT, WILL_MOVE_COUNT, GHOST_SPEED)
-    //need to initialize : lifeCount, movedCount, ghostSpeed
+    LIFE_COUNT = 20;
+    MOVED_COUNT = 0;
+    startGame();
 }
 
 function handleGameWin() {
@@ -191,8 +194,8 @@ function handleNextGame(willMoveCount, speed) {
 
     $heroWrap.classList.remove('hide');
     $ghostField.style.transform = `translate(0px, 0px)`;
-    displayGhosts();
-    ghost.createRandomGhost(GHOST_COUNT);
+
+    ghost.createRandomGhost(level);
     started = true;
     GHOST_LEFT_COUNT = 0;
     GHOST_DOWN_COUNT = 0;
@@ -210,17 +213,14 @@ function moveGhost(willMoveCount, speed) {
         MOVED_COUNT++;
         moveGhostTo(isLeft);
 
-
         if(MOVED_COUNT === willMoveCount) {
             clearInterval(move);
             isLeft = !isLeft;
             MOVED_COUNT = 0;
             moveGhost(willMoveCount, speed);
         }
-
     }, speed);
     move;
-
 }
 
 function moveGhostTo(isLeft) {
@@ -236,16 +236,6 @@ function moveGhostTo(isLeft) {
     $ghostField.style.transform =`
         translate(${GHOST_LEFT_COUNT * GHOST_MOVE_WIDTH}px, ${GHOST_DOWN_COUNT * GHOST_MOVE_WIDTH}px)`;
     }
-
-function displayGhosts() {
-    const $ghosts = document.querySelectorAll('.ghost__img');
-    $ghosts.forEach((ghost) => {
-        if(ghost.classList.contains('ghost__img--dead')) {
-            ghost.classList.remove('ghost__img--dead');
-            ghost.classList.remove('hide');
-        }
-    })
-}
 
 function handlePassedGhost() {
     if(!started) return;
