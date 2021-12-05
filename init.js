@@ -4,6 +4,7 @@
 
 import {Ghost} from './ghost.js';
 import {Hero} from './hero.js';
+import {Sound} from './sound.js';
 
 let LEFT_COUNT = 0;
 let UP_COUNT = 0;
@@ -78,15 +79,8 @@ const $levelUpBanner = document.querySelector('.levelup-banner');
 const $gameWinBanner = document.querySelector('.gamewin-banner');
 const $button = document.querySelector('.button');
 
-const gameStartSound = new Audio('audio/start.ogg');
-const dyingSound = new Audio('audio/dying.wav');
-const gameWinSound = new Audio('audio/gameWin.wav');
-const gameOverSound = new Audio('audio/gameOver.wav');
-const levelUpSound = new Audio('audio/levelup.mp3');
-const backgroundSound = new Audio('audio/background.wav');
+const sound = new Sound();
 
-gameStartSound.volume = 0.4;
-backgroundSound.volume = 0.05;
 
 $button.addEventListener('click', handleButtonClick);
 $startButton.addEventListener('click', startGame);
@@ -103,13 +97,13 @@ function handleButtonClick(e) {
 
 async function startGame() {
     level = 0;
-    backgroundSound.play();
+    sound.playBGM();
     $startButton.classList.add('remove');
     $heroWrap.classList.remove('hide');
     $lifeContainer.classList.remove('hide');
-    gameStartSound.play();
+    sound.playStart();
     setTimeout(() => {
-        backgroundSound.play();
+        sound.playBGM();
     }, 2000);
     await ghost.createRandomGhost(level);
     await ghost.moveGhost();
@@ -139,17 +133,15 @@ function restartGame() {
 
 function handleGameWin() {
     $gameWinBanner.classList.remove('remove');
-    backgroundSound.pause();
-    backgroundSound.currentTime = 0;
-    gameWinSound.play();
+    sound.stopBGM();
+    sound.playWin();
 }
 
 function handleGameOver() {
     $heroWrap.classList.add('hide');
     $gameOverBanner.classList.remove('remove');
-    backgroundSound.pause();
-    backgroundSound.currentTime = 0;
-    gameOverSound.play()
+    sound.stopBGM();
+    sound.playGameOver();
 }
 
 const $lifeContainer = document.querySelector('.life-container');
@@ -190,7 +182,7 @@ function handleLevelUp() {
     level++;
     $heroWrap.classList.add('hide');
     if(level < 3) {
-    levelUpSound.play();
+    sound.playLevelUp();
         ghost.willMoveCount = ghost.willMoveCount+ level * 10;
         ghost.speed = ghost.speed - level * 5;
         $levelUpBanner.classList.remove('remove');
@@ -277,8 +269,7 @@ function handleShooting(e) {
                 $bullet.style.transform = `translateY(0px)`
                 ghostImg.classList.add('ghost__img--dead');
                 ALIVE_GHOST_COUNT--;
-                dyingSound.currentTime = 0;
-                dyingSound.play();
+                sound.playDying();
         }
     })
 }
