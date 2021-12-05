@@ -110,6 +110,10 @@ function stopGame() {
     clearInterval(move);
 }
 
+function restartGame() {
+    
+}
+
 function handleGameOver() {
     $heroWrap.classList.add('hide');
     $gameOverBanner.classList.remove('remove');
@@ -183,7 +187,7 @@ $ghostField.addEventListener('transitionend', handlePassedGhost);
 
 function moveGhost(willMoveCount, speed) {
      move = setInterval(() => {
-
+        console.log('move interval is running...')
         if(!started) {return;}
         MOVED_COUNT++;
         moveGhostTo(isLeft);
