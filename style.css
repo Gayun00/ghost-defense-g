@@ -31,7 +31,7 @@ button {
     overflow: hidden;
 }
 
-.hero__wrap {
+  .hero__wrap {
     position: relative;
     top: -30%;
     left: 50%;
@@ -147,6 +147,15 @@ button {
 
 .life__img {
     width: 30px;
+}
+
+.levelup-banner {
+    text-align: center;
+    width: 100%;;
+}
+
+.levelup-banner__img {
+    width: 30%;
 }
 
 .gameover-banner{

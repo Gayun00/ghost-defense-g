@@ -87,10 +87,20 @@ const $startButton = document.querySelector('.start-button');
 const $heroWrap = document.querySelector('.hero__wrap');
 const $gameOverBanner = document.querySelector('.gameover-banner');
 const $levelUpBanner = document.querySelector('.levelup-banner');
+const $gameWinBanner = document.querySelector('.gamewin-banner');
+const $button = document.querySelector('.button');
+$button.addEventListener('click', handleButtonClick);
 $startButton.addEventListener('click', startGame);
+let LIFE_COUNT = 20;
 
+function handleButtonClick(e) {
+    let targetClass = e.target.getAttribute('class');
+    if(targetClass !== 'play-again__img') {
+        return;
+    }
+    restartGame();
+}
 
-let LIFE_COUNT = 10;
 
 async function startGame() {
     ALIVE_GHOST_COUNT = GHOST_COUNT;
@@ -99,7 +109,6 @@ async function startGame() {
     $lifeContainer.classList.remove('hide');
     await ghost.createRandomGhost(GHOST_COUNT);
     await moveGhost(WILL_MOVE_COUNT, GHOST_SPEED);
-    // await handleMoveToDownLeft();
     await getElementSize();
     await createLife(LIFE_COUNT);
 }
@@ -111,7 +120,13 @@ function stopGame() {
 }
 
 function restartGame() {
-    
+    $gameWinBanner.classList.add('remove');
+    console.log(LIFE_COUNT, GHOST_COUNT, MOVED_COUNT, WILL_MOVE_COUNT, GHOST_SPEED)
+    //need to initialize : lifeCount, movedCount, ghostSpeed
+}
+
+function handleGameWin() {
+
 }
 
 function handleGameOver() {
@@ -155,15 +170,18 @@ let level = 0;
 
 function handleLevelUp() {
     level++;
-    let willMoveCount = WILL_MOVE_COUNT + level * 10;
-    let speed = GHOST_SPEED - level * 5;
-    console.log(level,willMoveCount,speed)
-    $levelUpBanner.classList.remove('remove');
     $heroWrap.classList.add('hide');
-    setTimeout(() => {
-        $levelUpBanner.classList.add('remove');
-        handleNextGame(willMoveCount, speed);
-    }, 2000);
+    if(level < 3) {
+        let willMoveCount = WILL_MOVE_COUNT + level * 10;
+        let speed = GHOST_SPEED - level * 5;
+        $levelUpBanner.classList.remove('remove');
+        setTimeout(() => {
+            $levelUpBanner.classList.add('remove');
+            handleNextGame(willMoveCount, speed);
+        }, 2000);
+    } else {
+        $gameWinBanner.classList.remove('remove');
+    }
 }
 
 
