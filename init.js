@@ -8,11 +8,18 @@ import {Sound} from './sound.js';
 
 let level = 0;
 let started = true;
-let LIFE_COUNT = 5;
+let LIFE_COUNT = 15;
 
 const hero = new Hero();
 const ghost = new Ghost();
 const sound = new Sound();
+
+let willMoveCountCache = ghost.willMoveCount;
+let speedCache = ghost.speed;
+let lifeCountCache = LIFE_COUNT;
+let movedCountCache = ghost.movedCount;
+let leftCountCache = ghost.leftCount;
+let downCountCache = ghost.downCount;
 
 const $startButton = document.querySelector('.start-button');
 const $gameOverBanner = document.querySelector('.gameover-banner');
@@ -63,13 +70,15 @@ function stopGame() {
 function restartGame() {
     clearInterval(ghost.move);
     $gameWinBanner.classList.add('remove');
-    LIFE_COUNT = 5;
-    ghost.movedCount = 0;
+    LIFE_COUNT = lifeCountCache;
+    ghost.movedCount = movedCountCache;
     ghost.$ghostField.style.transform = `translate(0px, 0px)`;
     $gameOverBanner.classList.add('remove');
     started = true;
-    ghost.leftCount = 0;
-    ghost.downCount = 0;
+    ghost.leftCount = leftCountCache;
+    ghost.downCount = downCountCache;
+    ghost.speed = speedCache;
+    ghost.willMoveCount = willMoveCountCache;
     startGame();
 }
 
@@ -104,15 +113,15 @@ function handleLevelUp() {
 }
 
 function handleNextGame() {
-    ghost.movedCount = 0;
+    ghost.movedCount = movedCountCache;
     hero.$heroWithBullet.classList.remove('hide');
     ghost.$ghostField.style.transform = `translate(0px, 0px)`;
 
     ghost.createRandomGhost(level);
     started = true;
     ghost.started = true;
-    ghost.leftCount = 0;
-    ghost.downCount = 0;
+    ghost.leftCount = leftCountCache;
+    ghost.downCount = downCountCache;
     ghost.moveGhost();
 }
 
@@ -156,7 +165,8 @@ function displayLife() {
 function handlePassedGhost() {
     if(!started) return;
     const $ghostFieldLocation = ghost.$ghostField.getBoundingClientRect().top;
-    if($ghostFieldLocation > 800) {
+
+    if($ghostFieldLocation > window.innerHeight) {
         stopGame()
     }
     const aliveGhost = ghost.countAliveGhost();

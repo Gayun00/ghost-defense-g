@@ -14,7 +14,7 @@ export class Ghost {
         this.leftCount = 0;
         this.downCount = 0;
         this.willMoveCount = 15;
-        this.ghostSpeed = 1000;
+        this.speed = 20;
 
         this.x;
         this.y;
@@ -31,7 +31,6 @@ export class Ghost {
     }
 
     createRandomGhost(level) {
-        console.log('level'+level);
         this.$ghostField.innerHTML = '';
         for(let i = 0; i < (level + 1) * this.ghostCount; i++) {
             const $ghostEl = document.createElement('div');
