@@ -1,17 +1,25 @@
 export class Hero {
-  constructor(leftCount, upCount, speed, $bullet, bulletMovedCount, bulletSpeed) {
-    this.leftCount = leftCount;
-    this.upCount = upCount;
-    this.speed = speed;
-
-    this.$bullet = $bullet;
+  constructor() {
+    this.bulletX;
+    this.bulletY;
+    this.bulletWidth;
+    this.bulletHeight;
     this.moveBullet;
-    this.bulletMovedCount = bulletMovedCount;
-    this.bulletSpeed = bulletSpeed;
+    this.bulletMovedCount = 0;
+    this.bulletSpeed = 8
+    this.$bullet = document.querySelector('.bullet');
 
+    this.leftCount = 0;
+    this.upCount = 0;;
+    this.speed = 10;
     this.$heroWithBullet = document.querySelector('.hero__wrap');
     this.$heroContainer = document.querySelector('.hero__container');
     this.$heroImg = document.querySelector('.hero__img');
+  }
+
+  getBulletSize() {
+    this.bulletWidth = this.$bullet.getBoundingClientRect().width;
+    this.bulletHeight = this.$bullet.getBoundingClientRect().height;
   }
 
   handleHeroAngle(direction) {
@@ -40,5 +48,47 @@ export class Hero {
     this.$heroWithBullet.style.transform =` translate(${this.leftCount * this.speed}px, ${this.upCount * this.speed}px)`;
   }
 
+  handleHeroAndBullet(e) {
+    this.handleHero(e);
+    this.handleBullet(e);
+}
+
+    handleHero(e) {
+        const key = e.key;
+
+        if (key === 'ArrowLeft') {
+            this.handleHeroAngle('left');
+            this.moveHero('left');
+        } else if (key === 'ArrowRight') {
+            this.handleHeroAngle('right');
+            this.moveHero('right');
+        } else if (key === 'ArrowUp') {
+            this.handleHeroAngle('back');
+            this.moveHero('up');
+        } else if (key === 'ArrowDown') {
+            this.handleHeroAngle ('front');
+            this.moveHero('down');
+        }
+    }
+
+    handleBullet(e) {
+        if(e.keyCode === 32) {
+            clearInterval(this.moveBullet);
+            this.moveBullet = setInterval(() => {
+                this.bulletMovedCount--;
+                this.$bullet.style.transform = `translateY(${this.bulletMovedCount * 10}px)`
+                if(this.bulletMovedCount === -50) {
+                    clearInterval(this.moveBullet)
+                    this.bulletMovedCount = 0;
+                    this.$bullet.style.transform = `translateY(0px)`
+                }
+            }, this.bulletSpeed);
+        }
+    }
+
+    getBulletPox() {
+        bulletX = $bullet.getBoundingClientRect().left;
+        bulletY = $bullet.getBoundingClientRect().top;
+    }
 }
 

@@ -6,63 +6,15 @@ import {Ghost} from './ghost.js';
 import {Hero} from './hero.js';
 import {Sound} from './sound.js';
 
-let LEFT_COUNT = 0;
-let UP_COUNT = 0;
-let SPEED = 10;
+let hero = new Hero();
 
 window.addEventListener('keydown', handleHeroAndBullet);
 
 function handleHeroAndBullet(e) {
-    handleHero(e)
-    handleBullet(e)
+    hero.handleHeroAndBullet(e);
 }
 
-function handleHero(e) {
-    const key = e.key;
-
-    if (key === 'ArrowLeft') {
-        hero.handleHeroAngle('left');
-        hero.moveHero('left');
-    } else if (key === 'ArrowRight') {
-        hero.handleHeroAngle('right');
-        hero.moveHero('right');
-    } else if (key === 'ArrowUp') {
-        hero.handleHeroAngle('back');
-        hero.moveHero('up');
-    } else if (key === 'ArrowDown') {
-        hero.handleHeroAngle ('front');
-        hero.moveHero('down');
-    }
-}
-
-
-// bullet
-
-let BULLET_MOVED_COUNT = 0;
-const BULLET_SPEED = 8;
-let moveBullet;
-
-const $bullet = document.querySelector('.bullet');
-$bullet.addEventListener('transitionend', handleShooting);
-
-function handleBullet(e) {
-    if(e.keyCode === 32) {
-        clearInterval(moveBullet);
-        moveBullet = setInterval(() => {
-            BULLET_MOVED_COUNT--;
-            $bullet.style.transform = `translateY(${BULLET_MOVED_COUNT*10}px)`
-            if(BULLET_MOVED_COUNT === -50) {
-                clearInterval(moveBullet)
-                BULLET_MOVED_COUNT = 0;
-                $bullet.style.transform = `translateY(0px)`
-            }
-        }, BULLET_SPEED);
-    }
-
-}
-
-let hero = new Hero(LEFT_COUNT, UP_COUNT, SPEED, $bullet, BULLET_MOVED_COUNT, BULLET_SPEED)
-
+hero.$bullet.addEventListener('transitionend', handleShooting);
 
 // ghost
 
@@ -229,28 +181,15 @@ function handlePassedGhost() {
 
 // shooting
 
-let GHOST_WIDTH;
-let GHOST_HEIGHT;
-let BULLET_WIDTH;
-let BULLET_HEIGHT;
-
-let ALIVE_GHOST_COUNT;
-
-
 function getElementSize() {
-    const $ghost = document.querySelector('.ghost__container');
-    GHOST_WIDTH = $ghost.getBoundingClientRect().width;
-    GHOST_HEIGHT = $ghost.getBoundingClientRect().height;
-
-    BULLET_WIDTH = $bullet.getBoundingClientRect().width;
-    BULLET_HEIGHT = $bullet.getBoundingClientRect().height;
+    ghost.getSize();
+    hero.getBulletSize();
 }
 
-
 function handleShooting(e) {
-    const bulletX = $bullet.getBoundingClientRect().left;
-    const bulletY = $bullet.getBoundingClientRect().top;
+    hero.getBulletSize();
 
+    //getGhostPos
     const $ghosts = document.querySelectorAll('.ghost__container');
     $ghosts.forEach((ghost) => {
 
@@ -264,11 +203,11 @@ function handleShooting(e) {
             }, 400);
         } else if(ghostX - 30 < bulletX && bulletX <  ghostX + 30
             &&ghostY - 10 < bulletY && bulletY < ghostY + 10){
-                clearInterval(moveBullet)
+                clearInterval(hero.moveBullet)
                 BULLET_MOVED_COUNT = 0;
-                $bullet.style.transform = `translateY(0px)`
+                hero.$bullet.style.transform = `translateY(0px)`
                 ghostImg.classList.add('ghost__img--dead');
-                ALIVE_GHOST_COUNT--;
+                ghost.aliveGhost--;
                 sound.playDying();
         }
     })

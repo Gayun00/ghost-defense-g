@@ -2,6 +2,9 @@ export class Ghost {
     constructor() {
         this.started = true;
         this.left = true;
+        this.width;
+        this.height;
+
         this.ghostCount = 5;
         this.aliveGhostCount = 0;
 
@@ -13,9 +16,18 @@ export class Ghost {
         this.willMoveCount = 15;
         this.ghostSpeed = 20;
 
+        this.x;
+        this.y;
+        this.$ghost;
         this.$ghostField = document.querySelector('.ghost__field');
         this.$ghostFieldWidth = this.$ghostField.getBoundingClientRect().width;
         this.$ghostFieldHeight = this.$ghostField.getBoundingClientRect().height;
+    }
+
+    getSize() {
+        this.$ghost = document.querySelector('.ghost__container');
+        this.width = this.$ghost.getBoundingClientRect().width;
+        this.height = this.$ghost.getBoundingClientRect().height;
     }
 
     createRandomGhost(level) {
