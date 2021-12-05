@@ -37,8 +37,6 @@ export class Ghost {
         return Math.random() * (max - min) + min;
     }
 
-
-
     countAliveGhost() {
         this.aliveGhostCount = 0;
         const $ghosts = document.querySelectorAll('.ghost__img');

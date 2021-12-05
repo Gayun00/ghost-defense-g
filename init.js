@@ -98,14 +98,13 @@ async function startGame() {
     $heroWrap.classList.remove('hide');
     $lifeContainer.classList.remove('hide');
     await ghost.createRandomGhost(GHOST_COUNT);
-    await moveGhost(GHOST_MOVE_WIDTH);
+    await moveGhost(WILL_MOVE_COUNT, GHOST_SPEED);
     // await handleMoveToDownLeft();
     await getElementSize();
     await createLife(LIFE_COUNT);
 }
 
 function stopGame() {
-    console.log('stop game');
     started = false;
     displayLife();
     clearInterval(move);
@@ -148,62 +147,61 @@ function displayLife() {
     }
 }
 
+let level = 0;
+
 function handleLevelUp() {
-    console.log('levelup')
+    level++;
+    let willMoveCount = WILL_MOVE_COUNT + level * 10;
+    let speed = GHOST_SPEED - level * 5;
+    console.log(level,willMoveCount,speed)
     $levelUpBanner.classList.remove('remove');
     $heroWrap.classList.add('hide');
     setTimeout(() => {
         $levelUpBanner.classList.add('remove');
-        handleNextGame(5,1);
+        handleNextGame(willMoveCount, speed);
     }, 2000);
 }
 
-let ADD_GHOST_COUNT = 5;
-let ADD_GHOST_MOVE_WIDTH = 5;
 
-function handleNextGame(ghostCount, moveWidth) {
+function handleNextGame(willMoveCount, speed) {
 
     MOVED_COUNT = 0;
 
     $heroWrap.classList.remove('hide');
     $ghostField.style.transform = `translate(0px, 0px)`;
     displayGhosts();
-    ghost.createRandomGhost(ghostCount);
+    ghost.createRandomGhost(GHOST_COUNT);
     started = true;
     GHOST_LEFT_COUNT = 0;
     GHOST_DOWN_COUNT = 0;
-    moveGhost(moveWidth);
+    moveGhost(willMoveCount, speed);
 }
+
 let move;
 let isLeft = true;
 $ghostField.addEventListener('transitionend', handlePassedGhost);
 
-function moveGhost(moveWidth) {
-    // GHOST_LEFT_COUNT = 0;
-    // GHOST_DOWN_COUNT = 0;
+function moveGhost(willMoveCount, speed) {
      move = setInterval(() => {
-        console.log('move interval'+started, MOVED_COUNT)
 
         if(!started) {return;}
         MOVED_COUNT++;
-        moveGhostTo(isLeft, moveWidth);
+        moveGhostTo(isLeft);
 
 
-        if(MOVED_COUNT === WILL_MOVE_COUNT) {
+        if(MOVED_COUNT === willMoveCount) {
             clearInterval(move);
             isLeft = !isLeft;
             MOVED_COUNT = 0;
-            moveGhost(moveWidth);
+            moveGhost(willMoveCount, speed);
         }
 
-    }, GHOST_SPEED);
+    }, speed);
     move;
 
 }
 
-
-
-function moveGhostTo(isLeft, moveWidth) {
+function moveGhostTo(isLeft) {
     if (isLeft === true) {
         GHOST_LEFT_COUNT--;
         GHOST_DOWN_COUNT++;
@@ -214,7 +212,7 @@ function moveGhostTo(isLeft, moveWidth) {
 
     }
     $ghostField.style.transform =`
-        translate(${GHOST_LEFT_COUNT * moveWidth}px, ${GHOST_DOWN_COUNT * moveWidth}px)`;
+        translate(${GHOST_LEFT_COUNT * GHOST_MOVE_WIDTH}px, ${GHOST_DOWN_COUNT * GHOST_MOVE_WIDTH}px)`;
     }
 
 function displayGhosts() {
@@ -229,10 +227,8 @@ function displayGhosts() {
 
 function handlePassedGhost() {
     if(!started) return;
-    console.log('handle passed ghost')
     const $ghostFieldLocation = $ghostField.getBoundingClientRect().top;
     if($ghostFieldLocation > 800) {
-        console.log('reached 800')
         stopGame()
     }
 }
