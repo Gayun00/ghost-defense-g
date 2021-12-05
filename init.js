@@ -89,6 +89,8 @@ const $gameOverBanner = document.querySelector('.gameover-banner');
 const $levelUpBanner = document.querySelector('.levelup-banner');
 const $gameWinBanner = document.querySelector('.gamewin-banner');
 const $button = document.querySelector('.button');
+
+const dyingSound = new Audio('audio/dying.wav');
 $button.addEventListener('click', handleButtonClick);
 $startButton.addEventListener('click', startGame);
 let LIFE_COUNT = 5;
@@ -131,7 +133,6 @@ function restartGame() {
     GHOST_LEFT_COUNT = 0;
     GHOST_DOWN_COUNT = 0;
     startGame();
-    console.log(LIFE_COUNT, GHOST_COUNT, MOVED_COUNT, WILL_MOVE_COUNT, GHOST_SPEED)
 
 }
 
@@ -140,7 +141,6 @@ function handleGameWin() {
 }
 
 function handleGameOver() {
-    console.log('gameover')
     $heroWrap.classList.add('hide');
     $gameOverBanner.classList.remove('remove');
 }
@@ -216,11 +216,9 @@ $ghostField.addEventListener('transitionend', handlePassedGhost);
 
 function moveGhost(willMoveCount, speed) {
     move = setInterval(() => {
-        // console.log('move interval is running...')
         if(!started) {return;}
         MOVED_COUNT++;
         moveGhostTo(isLeft);
-        console.log('moveGhostTo is running...')
 
         if(MOVED_COUNT === willMoveCount) {
             clearInterval(move);
@@ -242,19 +240,22 @@ function moveGhostTo(isLeft) {
         GHOST_DOWN_COUNT++;
 
     }
-    console.log(started)
     $ghostField.style.transform =`
         translate(${GHOST_LEFT_COUNT * GHOST_MOVE_WIDTH}px, ${GHOST_DOWN_COUNT * GHOST_MOVE_WIDTH}px)`;
     }
 
 function handlePassedGhost() {
-    console.log('handle passed')
     if(!started) return;
     const $ghostFieldLocation = $ghostField.getBoundingClientRect().top;
-    console.log($ghostFieldLocation)
     if($ghostFieldLocation > 800) {
         stopGame()
-        console.log('stop game')
+    }
+    const aliveGhost = ghost.countAliveGhost();
+    console.log(aliveGhost)
+    if(aliveGhost === 0) {
+        stopGame()
+    } else {
+        'not yet...'
     }
 }
 
@@ -300,6 +301,8 @@ function handleShooting(e) {
                 $bullet.style.transform = `translateY(0px)`
                 ghostImg.classList.add('ghost__img--dead');
                 ALIVE_GHOST_COUNT--;
+                dyingSound.currentTime = 0;
+                dyingSound.play();
         }
     })
 }
