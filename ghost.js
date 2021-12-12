@@ -1,5 +1,10 @@
 export class Ghost {
-    constructor() {
+    constructor(x, y, name) {
+        this.x = x;
+        this.y = y;
+        this.name = name;
+        this.imgSrc = "images/enemy.png";
+
         this.started = true;
         this.left = true;
         this.width;
@@ -8,12 +13,12 @@ export class Ghost {
         this.ghostCount = 5;
         this.aliveGhostCount = 0;
 
-        this.moveWidth = 1;
+        // this.moveWidth = 1;
         this.movedCount = 0;
         this.move;
         this.leftCount = 0;
         this.downCount = 0;
-        this.willMoveCount = 15;
+        // this.willMoveCount = 15;
         this.speed = 20;
 
         this.x;
@@ -49,9 +54,9 @@ export class Ghost {
         }
     }
 
-    createRandomNumber(min, max) {
-        return Math.random() * (max - min) + min;
-    }
+    // createRandomNumber(min, max) {
+    //     return Math.random() * (max - min) + min;
+    // }
 
     moveGhost() {
         this.move = setInterval(() => {

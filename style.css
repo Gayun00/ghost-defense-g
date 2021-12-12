@@ -76,9 +76,10 @@ button {
 
 .ghost__field {
     position: relative;
-    top: -300px;
+    top: 0px;
     height: 200px;
     transition: 0.5ms all linear;
+    background-color: wheat;
 }
 
 .ghost__container {

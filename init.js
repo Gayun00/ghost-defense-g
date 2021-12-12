@@ -13,6 +13,9 @@ let LIFE_COUNT = 15;
 const hero = new Hero();
 const ghost = new Ghost();
 const sound = new Sound();
+let ghostElArr = [];
+
+
 
 let willMoveCountCache = ghost.willMoveCount;
 let speedCache = ghost.speed;
@@ -55,10 +58,60 @@ async function startGame() {
     setTimeout(() => {
         sound.playBGM();
     }, 2000);
-    await ghost.createRandomGhost(level);
-    await ghost.moveGhost();
-    await getElementSize();
-    await createLife(LIFE_COUNT);
+    // await ghost.createRandomGhost(level);
+    // await ghost.moveGhost();
+    // await getElementSize();
+    // await createLife(LIFE_COUNT);
+}
+
+const $ghostField = document.querySelector('.ghost__field');
+
+const $ghostFieldWidth = $ghostField.getBoundingClientRect().width;
+const $ghostFieldHeight = $ghostField.getBoundingClientRect().height;
+const GHOST_WIDTH = 49;
+const willMoveCount = 15;
+const moveWidth = 1;
+
+let ghostArr = [];
+
+function createGhost(ghostCount) {
+
+    for(let i = 0; i < ghostCount; i++) {
+        const x = createRandomNumber((willMoveCount * moveWidth) + GHOST_WIDTH / 2,
+            $ghostFieldWidth - (willMoveCount * moveWidth + GHOST_WIDTH / 2));
+        const y = createRandomNumber(0, $ghostFieldHeight);
+        const ghostName = `ghost${i}`;
+        const ghost = new Ghost(x, y, ghostName);
+        ghostArr.push(ghost);
+    }
+    console.log(ghostArr)
+}
+
+createGhost(5)
+displayGhost()
+
+
+function displayGhost() {
+    ghostArr.forEach((ghost) => {
+        const $ghostEl = document.createElement('div');
+
+        $ghostEl.innerHTML = `
+        <img class="ghost__img" src="${ghost.imgSrc}">`
+        $ghostEl.classList.add('ghost__container');
+        $ghostEl.setAttribute('id', ghost.name);
+        $ghostField.appendChild($ghostEl);
+
+        $ghostEl.style.top = `${ghost.y}px`;
+        $ghostEl.style.left = `${ghost.x}px`;
+        ghostElArr.push($ghostEl)
+
+    })
+ }
+
+ console.log(ghostElArr[0])
+
+function createRandomNumber(min, max) {
+    return Math.random() * (max - min) + min;
 }
 
 function stopGame() {
