@@ -74,6 +74,20 @@ const moveWidth = 1;
 
 let ghostArr = [];
 
+const callback = (entry, observer) => {
+    if(!entry[0].interSecting === false && entry[0].interSectionRatio === 1) {
+        console.log('passed!!!!');
+    }
+}
+
+let options = {
+    roog: null,
+    rootMargin: '0px',
+    threshole: 1
+}
+
+const observer = new IntersectionObserver(callback, options);
+
 function createGhost(ghostCount) {
 
     for(let i = 0; i < ghostCount; i++) {
@@ -103,6 +117,8 @@ function displayGhost() {
 
         $ghostEl.style.top = `${ghost.y}px`;
         $ghostEl.style.left = `${ghost.x}px`;
+
+        observer.observe($ghostEl);
         ghostElArr.push($ghostEl)
 
     })

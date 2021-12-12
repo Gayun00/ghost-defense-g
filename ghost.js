@@ -35,24 +35,24 @@ export class Ghost {
         this.height = this.$ghost.getBoundingClientRect().height;
     }
 
-    createRandomGhost(level) {
-        this.$ghostField.innerHTML = '';
-        for(let i = 0; i < (level + 1) * this.ghostCount; i++) {
-            const $ghostEl = document.createElement('div');
-            $ghostEl.classList.add('ghost__container')
-            $ghostEl.innerHTML = `
-                <img class="ghost__img" src="images/enemy.png">`
-            this.$ghostField.appendChild($ghostEl);
-            const $ghostElWidth = $ghostEl.getBoundingClientRect().width;
+    // createRandomGhost(level) {
+    //     this.$ghostField.innerHTML = '';
+    //     for(let i = 0; i < (level + 1) * this.ghostCount; i++) {
+    //         const $ghostEl = document.createElement('div');
+    //         $ghostEl.classList.add('ghost__container')
+    //         $ghostEl.innerHTML = `
+    //             <img class="ghost__img" src="images/enemy.png">`
+    //         this.$ghostField.appendChild($ghostEl);
+    //         const $ghostElWidth = $ghostEl.getBoundingClientRect().width;
 
-            const x = this.createRandomNumber(
-                (this.willMoveCount * this.moveWidth) + $ghostElWidth / 2,
-                this.$ghostFieldWidth - (this.willMoveCount * this.moveWidth + $ghostElWidth / 2));
-            const y = this.createRandomNumber(0, this.$ghostFieldHeight);
-            $ghostEl.style.left = `${x}px`;
-            $ghostEl.style.top = `${y}px`;
-        }
-    }
+    //         const x = this.createRandomNumber(
+    //             (this.willMoveCount * this.moveWidth) + $ghostElWidth / 2,
+    //             this.$ghostFieldWidth - (this.willMoveCount * this.moveWidth + $ghostElWidth / 2));
+    //         const y = this.createRandomNumber(0, this.$ghostFieldHeight);
+    //         $ghostEl.style.left = `${x}px`;
+    //         $ghostEl.style.top = `${y}px`;
+    //     }
+    // }
 
     // createRandomNumber(min, max) {
     //     return Math.random() * (max - min) + min;
