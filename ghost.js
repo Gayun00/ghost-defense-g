@@ -13,12 +13,10 @@ export class Ghost {
         this.ghostCount = 5;
         this.aliveGhostCount = 0;
 
-        // this.moveWidth = 1;
         this.movedCount = 0;
         this.move;
         this.leftCount = 0;
         this.downCount = 0;
-        // this.willMoveCount = 15;
         this.speed = 20;
 
         this.x;
